@@ -17,6 +17,7 @@ class ViewController: UIViewController {
   var countries = [String]()
   var score = 0
   var correctAnswer = 0
+  var numberOfQuestionsAsked = 0
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -35,6 +36,9 @@ class ViewController: UIViewController {
   }
 
   func askQuestion(action: UIAlertAction! = nil) {
+    
+    numberOfQuestionsAsked += 1
+    
     countries.shuffle()
     correctAnswer = Int.random(in: 0...2)
     
@@ -42,25 +46,39 @@ class ViewController: UIViewController {
     button2.setImage(UIImage(named: countries[1]), for: .normal)
     button3.setImage(UIImage(named: countries[2]), for: .normal)
     
-    title = countries[correctAnswer].uppercased()
+    title = "FLAG OF \(countries[correctAnswer].uppercased())? YOUR SCORE: \(score)."
   }
 
   @IBAction func buttonTapped(_ sender: UIButton) {
     
-    print(sender.tag)
+    var acTitle = ""
+    
     if sender.tag == correctAnswer {
-      title = "Correct"
+      title = "CORRECT!"
       score += 1
     } else {
-      title = "Wrong"
+      title = "WRONG!"
+      acTitle = "\(title!) That’s the flag of \(countries[sender.tag].uppercased())."
       score -= 1
     }
     
-    let ac = UIAlertController(title: title, message: "Your score is \(score)", preferredStyle: .alert)
-    
-    ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
-    
-    present(ac, animated: true, completion: nil)
+    if numberOfQuestionsAsked < 10 {
+      let ac = UIAlertController(title: acTitle, message: "Your score is \(score)", preferredStyle: .alert)
+      ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
+      present(ac, animated: true, completion: nil)
+    } else {
+      let ac = UIAlertController(title: acTitle, message: """
+      GOOD JOB!
+      FINAL SCORE \(score) / \(numberOfQuestionsAsked) QUESTIONS.
+      WANT TO PLAY AGAIN?
+      """, preferredStyle: .alert)
+      ac.addAction(UIAlertAction(title: "RESTART", style: .default) { action in
+        self.numberOfQuestionsAsked = 0
+        self.score = 0
+        self.askQuestion()
+      })
+      present(ac, animated: true, completion: nil)
+    }
   }
 }
 
