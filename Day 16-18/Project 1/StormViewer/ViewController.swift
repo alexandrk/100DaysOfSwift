@@ -29,7 +29,8 @@ class ViewController: UITableViewController {
       }
     }
     
-    print(pictures)
+    // Add Recommend button to nav bar
+    navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Recommend to others", style: .plain, target: self, action: #selector(recommendAppPopover))
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -64,5 +65,22 @@ class ViewController: UITableViewController {
     return newImage!.withRenderingMode(.automatic)
   }
 
+  @objc func recommendAppPopover() {
+    
+    // Get the application name from Info.plist file, default to hardcoded string if not found
+    var applicationName: String!
+    if let path = Bundle.main.path(forResource: "Info", ofType: "plist"),
+       let resorceFileDictionary = NSDictionary(contentsOfFile: path),
+       let appNameFromPlist = resorceFileDictionary.object(forKey: "CFBundleDisplayName") as? String {
+      applicationName = appNameFromPlist
+    } else {
+      applicationName = "StormViewer"
+    }
+    
+    let vc = UIActivityViewController(activityItems: ["Check out this cool app that I'm using: '\(applicationName!)'."], applicationActivities: nil)
+    vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+    present(vc, animated: true, completion: nil)
+  }
+  
 }
 
