@@ -32,6 +32,8 @@ class ViewController: UIViewController {
     button2.layer.borderColor = UIColor.lightGray.cgColor
     button3.layer.borderColor = UIColor.lightGray.cgColor
     
+    navigationItem.rightBarButtonItem = UIBarButtonItem(title: "SCORE", style: .plain, target: self, action: #selector(showCurrentScore))
+    
     askQuestion()
   }
 
@@ -46,7 +48,7 @@ class ViewController: UIViewController {
     button2.setImage(UIImage(named: countries[1]), for: .normal)
     button3.setImage(UIImage(named: countries[2]), for: .normal)
     
-    title = "FLAG OF \(countries[correctAnswer].uppercased())? YOUR SCORE: \(score)."
+    title = "FLAG OF \(countries[correctAnswer].uppercased())"
   }
 
   @IBAction func buttonTapped(_ sender: UIButton) {
@@ -79,6 +81,12 @@ class ViewController: UIViewController {
       })
       present(ac, animated: true, completion: nil)
     }
+  }
+  
+  @objc func showCurrentScore() {
+    let alert = UIAlertController(title: "CURRENT SCORE:", message: "\(score) out of \(numberOfQuestionsAsked) question(s) asked.", preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+    present(alert, animated: true, completion: nil)
   }
 }
 
