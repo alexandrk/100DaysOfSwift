@@ -20,6 +20,8 @@ class DetailViewController: UIViewController {
     title = (navBarTitle != nil) ? navBarTitle : selectedImage
     navigationItem.largeTitleDisplayMode = .never
     
+    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(sharePopover))
+    
     if let imagePath = selectedImage {
       imageView.image = UIImage(named: imagePath, in: Bundle.main, compatibleWith: nil)
     }
@@ -34,5 +36,17 @@ class DetailViewController: UIViewController {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     navigationController?.hidesBarsOnTap = false
+  }
+  
+  @objc func sharePopover() {
+    guard let image = imageView.image?.jpegData(compressionQuality: 0.8) else {
+      print("No image found")
+      return
+    }
+    
+    
+    let vc = UIActivityViewController(activityItems: ["Image name: \(selectedImage ?? "unknown")", image], applicationActivities: [])
+    vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+    present(vc, animated: true)
   }
 }
