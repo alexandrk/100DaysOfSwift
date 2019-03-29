@@ -13,27 +13,36 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Project_2" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="CountryFlagsGame" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A0k-Kt-D6X">
-                                <rect key="frame" x="87.5" y="100" width="200" height="100"/>
+                                <rect key="frame" x="87.5" y="84" width="200" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="A0k-Kt-D6X" secondAttribute="height" multiplier="2:1" id="dOh-wy-leT"/>
+                                </constraints>
                                 <state key="normal" image="estonia"/>
                                 <connections>
                                     <action selector="buttonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="tlQ-h4-LcE"/>
                                 </connections>
                             </button>
                             <button opaque="NO" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Epd-2z-dmK">
-                                <rect key="frame" x="87.5" y="360" width="200" height="100"/>
+                                <rect key="frame" x="87.5" y="344" width="200" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Epd-2z-dmK" secondAttribute="height" multiplier="2:1" id="B2G-e0-zsJ"/>
+                                </constraints>
                                 <state key="normal" image="italy"/>
                                 <connections>
                                     <action selector="buttonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KC3-eg-MgP"/>
                                 </connections>
                             </button>
                             <button opaque="NO" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bz7-lp-Rc4">
-                                <rect key="frame" x="87.5" y="230" width="200" height="100"/>
+                                <rect key="frame" x="87.5" y="214" width="200" height="100"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="Bz7-lp-Rc4" secondAttribute="height" multiplier="2:1" id="OtS-wZ-ghh"/>
+                                </constraints>
                                 <state key="normal" image="france"/>
                                 <connections>
                                     <action selector="buttonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="JFU-eV-ReZ"/>
@@ -43,11 +52,14 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Bz7-lp-Rc4" firstAttribute="top" secondItem="A0k-Kt-D6X" secondAttribute="bottom" constant="30" id="4uJ-ie-45l"/>
-                            <constraint firstItem="A0k-Kt-D6X" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="36" id="JfS-pO-xWq"/>
+                            <constraint firstItem="A0k-Kt-D6X" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="20" id="JfS-pO-xWq"/>
                             <constraint firstItem="A0k-Kt-D6X" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="KxZ-mp-0mX"/>
                             <constraint firstItem="Epd-2z-dmK" firstAttribute="top" secondItem="Bz7-lp-Rc4" secondAttribute="bottom" constant="30" id="W4u-XC-D0D"/>
                             <constraint firstItem="Bz7-lp-Rc4" firstAttribute="centerX" secondItem="A0k-Kt-D6X" secondAttribute="centerX" id="bPs-lg-qP9"/>
                             <constraint firstItem="Epd-2z-dmK" firstAttribute="centerX" secondItem="Bz7-lp-Rc4" secondAttribute="centerX" id="hJu-0q-O0F"/>
+                            <constraint firstItem="Epd-2z-dmK" firstAttribute="height" secondItem="Bz7-lp-Rc4" secondAttribute="height" id="r31-v1-vHb"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Epd-2z-dmK" secondAttribute="bottom" constant="20" id="u8b-Bz-McX"/>
+                            <constraint firstItem="Bz7-lp-Rc4" firstAttribute="height" secondItem="A0k-Kt-D6X" secondAttribute="height" id="uJn-QM-t4I"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
