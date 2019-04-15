@@ -29,27 +29,33 @@ class ViewController: UITableViewController {
     
     // By setting definesPresentationContext on your view controller to true, you ensure that the search bar does not remain on the screen if the user navigates to another view controller while the UISearchController is active.
     definesPresentationContext = true
+   
+    title = (navigationController?.tabBarItem.tag == 0) ? "MOST RECENT" : "TOP RATED"
     
-    if (navigationController?.tabBarItem.tag) == 0 {
-      // https://api.whitehouse.gov/v1/petitions.json?limit=100
-      API_URL = "https://www.hackingwithswift.com/samples/petitions-1.json"
-      title = "MOST RECENT"
-    } else {
-      // https://api.whitehouse.gov/v1/petitions.json?signatureCountFloor=10000&limit=100
-      API_URL = "https://www.hackingwithswift.com/samples/petitions-2.json"
-      title = "TOP RATED"
-    }
-    
-    if let url = URL(string: API_URL) {
-      if let data = try? Data(contentsOf: url) {
-        parse(json: data)
-      }
-    }
+    performSelector(inBackground: #selector(fetchJSON), with: nil)
     
     navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Credits", style: .plain, target: self, action: #selector(showCredits))
     
   }
-  
+
+  @objc func fetchJSON() {
+    
+    if (navigationController?.tabBarItem.tag) == 0 {
+      // https://api.whitehouse.gov/v1/petitions.json?limit=100
+      API_URL = "https://www.hackingwithswift.com/samples/petitions-1.json"
+    } else {
+      // https://api.whitehouse.gov/v1/petitions.json?signatureCountFloor=10000&limit=100
+      API_URL = "https://www.hackingwithswift.com/samples/petitions-2.json"
+      
+    }
+    
+    if let url = URL(string: API_URL) {
+      if let data = try? Data(contentsOf: url) {
+          parse(json: data)
+      }
+    }
+  }
+
   func setupSearchController() -> UISearchController {
     let controller = UISearchController(searchResultsController: nil)
     controller.searchResultsUpdater = self
@@ -70,15 +76,22 @@ class ViewController: UITableViewController {
     do {
       let jsonPetitions = try decoder.decode(Petitions.self, from: json)
       petitions = jsonPetitions.results
-      tableView.reloadData()
+      
+      tableView.performSelector(onMainThread: #selector(UITableView.reloadData), with: nil, waitUntilDone: false)
     } catch {
-      print(error)
-      showError(title: "ERROR", message: "Cannot parse json from: \(API_URL!).")
+      
+      let args = ["title": "ERROR", "message": "Cannot parse json from: \(API_URL!)."]
+      performSelector(onMainThread: #selector(showError(args:)), with: args, waitUntilDone: false)
+      
     }
     
   }
   
-  func showError(title: String?, message: String?) {
+  @objc func showError(args: [String: String]?) {
+    
+    let title = args?["title"] ?? "ERROR"
+    let message = args?["message"] ?? "" 
+    
     let vc = UIAlertController(title: title, message: message, preferredStyle: .alert)
     vc.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
     present(vc, animated: true, completion: nil)
