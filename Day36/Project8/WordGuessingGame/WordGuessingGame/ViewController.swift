@@ -147,7 +147,7 @@ class ViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    loadLevel()
+    performSelector(inBackground: #selector(loadLevel), with: nil)
   }
   
   @objc func letterTapped(_ sender: UIButton) {
@@ -190,7 +190,7 @@ class ViewController: UIViewController {
     }
     level += 1
     solutions.removeAll(keepingCapacity: true)
-    loadLevel()
+    performSelector(inBackground: #selector(loadLevel), with: nil)
   }
   
   @objc func clearTapped(_ sender: UIButton) {
@@ -203,7 +203,7 @@ class ViewController: UIViewController {
     activatedButtons.removeAll()
   }
   
-  func loadLevel() {
+  @objc func loadLevel() {
     var clueString = ""
     var solutionsString = ""
     var letterBits = [String]()
@@ -213,30 +213,38 @@ class ViewController: UIViewController {
         var lines = levelContents.components(separatedBy: "\n")
         lines.shuffle()
         
-        for (index, line) in lines.enumerated() {
-          let parts = line.components(separatedBy: ": ")
-          let answer = parts[0]
-          let clue = parts[1]
-          
-          clueString += "\(index + 1). \(clue)\n"
-          
-          let solutionWord = answer.replacingOccurrences(of: "|", with: "")
-          solutionsString += "\(solutionWord.count) letters\n"
-          solutions.append(solutionWord)
-          
-          let bits = answer.components(separatedBy: "|")
-          letterBits += bits
+        DispatchQueue.main.async { [weak self] in
+          for (index, line) in lines.enumerated() {
+            let parts = line.components(separatedBy: ": ")
+            let answer = parts[0]
+            let clue = parts[1]
+            
+            clueString += "\(index + 1). \(clue)\n"
+            
+            let solutionWord = answer.replacingOccurrences(of: "|", with: "")
+            solutionsString += "\(solutionWord.count) letters\n"
+            self?.solutions.append(solutionWord)
+            
+            let bits = answer.components(separatedBy: "|")
+            letterBits += bits
+          }
         }
+        
       }
     }
-    cluesLabel.text = clueString.trimmingCharacters(in: .whitespacesAndNewlines)
-    answersLabel.text = solutionsString.trimmingCharacters(in: .whitespacesAndNewlines)
     
-    letterButtons.shuffle()
-    
-    if letterButtons.count == letterBits.count {
-      for i in 0..<letterButtons.count {
-        letterButtons[i].setTitle(letterBits[i], for: .normal)
+    DispatchQueue.main.async { [weak self] in
+      guard let weak_self = self else { return }
+      
+      weak_self.cluesLabel.text = clueString.trimmingCharacters(in: .whitespacesAndNewlines)
+      weak_self.answersLabel.text = solutionsString.trimmingCharacters(in: .whitespacesAndNewlines)
+      
+      weak_self.letterButtons.shuffle()
+      
+      if weak_self.letterButtons.count == letterBits.count {
+        for i in 0..<weak_self.letterButtons.count {
+          self?.letterButtons[i].setTitle(letterBits[i], for: .normal)
+        }
       }
     }
   }
