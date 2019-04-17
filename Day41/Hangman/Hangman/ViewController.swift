@@ -36,6 +36,11 @@ class ViewController: UIViewController {
     nextLevel(fromBeginning: true)
   }
 
+  /**
+   Retreives a random word from the words text file.
+   
+   - Returns: A random word.
+  */
   func getLevelWord() -> String {
     let bundleURL = Bundle.main.bundleURL
     
@@ -48,6 +53,9 @@ class ViewController: UIViewController {
     }
   }
 
+  /**
+    Creates a collection of UILabels matching the number of letters in the levelWord.
+  */
   func drawWord() {
     let acceptableLetters = keyboardLetters.joined(separator: "").replacingOccurrences(of: " ", with: "")
     
@@ -71,7 +79,7 @@ class ViewController: UIViewController {
       letterLabel.textAlignment = .center
       letterLabel.backgroundColor = .gray
       
-      // Fill letter label with either placeholder or character (if that character is not present on the keyboard below)
+      // Fill letter label with either placeholder or word letter (if that character is not present on the generated keyboard)
       if acceptableLetters.contains(letter) {
         letterLabel.text = " "
       } else {
@@ -84,6 +92,10 @@ class ViewController: UIViewController {
     
   }
   
+  /**
+    Creates a virtual keyboard towards the bottom of the screen to be used during the game.
+    Represented as three horizontal stackViews inside a vertical stackView.
+  */
   func drawKeyboard() {
     
     let keyboardView = UIStackView()
@@ -123,7 +135,13 @@ class ViewController: UIViewController {
     
   }
   
+  /**
+   Virtual Keyboard touch handler.
+   - Parameters: sender: virtual keyboard button that was pressed.
+  */
   @objc func keyboardButtonPressed(sender: UIButton) {
+    
+    // Retrieves the String representation of the selected letter
     guard let selectedLetter = sender.titleLabel?.text?.uppercased() else { fatalError("No keyboard button letter attached.") }
     
     var letterFound = false
@@ -133,31 +151,31 @@ class ViewController: UIViewController {
       sender.isEnabled = false
       sender.backgroundColor = .gray
       
-      // pressed button letter matches one of the letters in the word
+      // Here index ofthe levelWord matches index of the letterLabelsArray (since it was generated from the levelWord prior).
       if letter == Character(selectedLetter) {
         letterLabelsArray[index].text = selectedLetter
         letterFound = true
       }
     }
     
-    let guessedWord = letterLabelsArray.reduce("") { (result, label) -> String in
-      return result + (label.text ?? "")
-    }
-   
-    if levelWord.capitalized == guessedWord.capitalized {
-      let vc = UIAlertController(title: "YOU GOT IT", message: "Want to play again?", preferredStyle: .alert)
-      vc.addAction(UIAlertAction(title: "Next Level", style: .default, handler: { [weak self] (action) in
-        self?.nextLevel()
-      }))
-      present(vc, animated: true)
-      return
-    }
-    
-    
-    // subtract live if no letters were matched
-    if !letterFound {
+    switch letterFound {
+    case true:
+      // Combine all the uncovered letters in the labels to form a guessed word at the moment.
+      let guessedWord = letterLabelsArray.reduce("") { (result, label) -> String in
+        return result + (label.text ?? "")
+      }
+      // If guessed word matches levelWord prompt for next level.
+      if levelWord.capitalized == guessedWord.capitalized {
+        let vc = UIAlertController(title: "YOU GOT IT", message: "Want to play again?", preferredStyle: .alert)
+        vc.addAction(UIAlertAction(title: "Next Level", style: .default, handler: { [weak self] (action) in
+          self?.nextLevel()
+        }))
+        present(vc, animated: true)
+        return
+      }
+    case false:
       livesCount -= 1
-    
+      
       if livesCount <= 0 {
         let vc = UIAlertController(title: "GAME OVER", message: "Correct Answer: \(levelWord!).", preferredStyle: .alert)
         vc.addAction(UIAlertAction(title: "Play Again?", style: .default, handler: { [weak self] (action) in
@@ -176,18 +194,30 @@ class ViewController: UIViewController {
     
   }
   
+  /**
+   Loads next level.
+     - Resets UILabels Array and removes current labels from the view
+     - Resets lives count to default
+     - Increments score count
+     - Retrieves a new word
+     - Generates new UILabels for a new word
+   
+   - Parameters:
+     - fromBeginning: if set to **true** the score is going to be reset to 0
+  */
   @objc func nextLevel(fromBeginning: Bool = false) {
-    letterLabelsArray.removeAll()
     let labelsSubview = view.viewWithTag(22)
     labelsSubview?.removeFromSuperview()
-    livesCount = 7
-    score = (fromBeginning) ? 0 : score + 1
-    levelWord = getLevelWord()
-    drawWord()
+    letterLabelsArray.removeAll()
     keyboardArray.forEach { (button) in
       button.isEnabled = true
       button.backgroundColor = .black
     }
+    
+    livesCount = 7
+    score      = (fromBeginning) ? 0 : score + 1
+    levelWord  = getLevelWord()
+    drawWord()
     title = "Country: \(levelWord.count) letters"
   }
   
