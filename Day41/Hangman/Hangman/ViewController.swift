@@ -14,28 +14,76 @@ class ViewController: UIViewController {
   var keyboardArray = [UIButton]()
   var letterLabelsArray = [UILabel]()
   let keyboardLetters = ["q w e r t y u i o p", "a s d f g h j k l", "z x c v b n m"]
+  let livesLabel = UIButton()
+  let scoreLabel = UIButton()
   var livesCount = 7 {
     didSet {
-      navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Lives: \(livesCount)", style: .done, target: nil, action: nil)
+      livesLabel.setTitle("Lives: \(livesCount)", for: .normal)
     }
   }
   var score = 0 {
     didSet {
-      navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Score: \(score)", style: .done, target: nil, action: nil)
+      scoreLabel.setTitle("Score: \(score)", for: .normal)
     }
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    drawKeyboard()
+    title = "HANGMAN"
+    view.backgroundColor = UIColor(red:0.93, green:0.93, blue:0.93, alpha:1.0)
     
-    navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Lives: \(livesCount)", style: .done, target: nil, action: nil)
-    navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Score: \(score)", style: .done, target: nil, action: nil)
-    
-    nextLevel(fromBeginning: true)
+    drawUIElements()
+    getLevel(fromBeginning: true)
   }
-
+  
+  func drawUIElements() {
+    drawLivesLabel()
+    drawScoresLabel()
+    drawKeyboard()
+  }
+  
+  func drawLivesLabel() {
+    livesLabel.isUserInteractionEnabled = false
+    livesLabel.setTitle("Lives: \(livesCount)", for: .normal)
+    livesLabel.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+    livesLabel.backgroundColor = UIColor(red:0.24, green:0.60, blue:0.44, alpha:1.0)
+    livesLabel.setTitleColor(.white, for: .normal)
+    livesLabel.layer.cornerRadius = 10
+    livesLabel.titleEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    livesLabel.translatesAutoresizingMaskIntoConstraints = false
+    livesLabel.sizeToFit()
+    view.addSubview(livesLabel)
+    
+    NSLayoutConstraint.activate([
+      livesLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+      livesLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 10),
+      livesLabel.widthAnchor.constraint(equalToConstant: 100)
+      //livesLabel.heightAnchor.constraint(equalToConstant: 50)
+      ])
+  }
+  
+  func drawScoresLabel() {
+    livesLabel.isUserInteractionEnabled = false
+    scoreLabel.setTitle("Score: \(score)", for: .normal)
+    scoreLabel.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+    scoreLabel.backgroundColor = UIColor(red:0.24, green:0.60, blue:0.44, alpha:1.0)
+    scoreLabel.setTitleColor(.white, for: .normal)
+    scoreLabel.layer.cornerRadius = 10
+    scoreLabel.titleEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    scoreLabel.translatesAutoresizingMaskIntoConstraints = false
+    livesLabel.sizeToFit()
+    view.addSubview(scoreLabel)
+    
+    NSLayoutConstraint.activate([
+      
+      scoreLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+      scoreLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -10),
+      scoreLabel.widthAnchor.constraint(equalToConstant: 100)
+      //scoreLabel.heightAnchor.constraint(equalToConstant: 50)
+      ])
+  }
+  
   /**
    Retreives a random word from the words text file.
    
@@ -75,16 +123,18 @@ class ViewController: UIViewController {
     for letter in levelWord.lowercased() {
       let letterLabel = UILabel()
       letterLabel.font = UIFont.systemFont(ofSize: 25, weight: .bold)
-      letterLabel.textColor = .black
+      letterLabel.textColor = .white
       letterLabel.textAlignment = .center
-      letterLabel.backgroundColor = .gray
+      letterLabel.adjustsFontSizeToFitWidth = true
+      letterLabel.backgroundColor = UIColor(red:0.00, green:0.45, blue:0.85, alpha:1.0)
+      letterLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
       
       // Fill letter label with either placeholder or word letter (if that character is not present on the generated keyboard)
       if acceptableLetters.contains(letter) {
         letterLabel.text = " "
       } else {
         letterLabel.text = String(letter)
-        letterLabel.backgroundColor = .white
+        letterLabel.backgroundColor = view.backgroundColor
       }
       letterLabelsArray.append(letterLabel)
       wordStackView.addArrangedSubview(letterLabel)
@@ -110,20 +160,30 @@ class ViewController: UIViewController {
     keyboardView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor).isActive = true
     keyboardView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25).isActive = true
   
-    for row in keyboardLetters {
+    for (index, row) in keyboardLetters.enumerated() {
       
       let rowStackView = UIStackView()
       rowStackView.axis = .horizontal
-      rowStackView.distribution = .equalSpacing
+      rowStackView.distribution = .fillEqually
       rowStackView.spacing = 5
       keyboardView.addArrangedSubview(rowStackView)
       
+      let offset = view.frame.width / 10 + rowStackView.spacing
+      switch (index) {
+      case 1:  rowStackView.widthAnchor.constraint(equalTo: keyboardView.widthAnchor, constant: -offset).isActive = true
+      case 2:  rowStackView.widthAnchor.constraint(equalTo: keyboardView.widthAnchor, constant: -(offset * 3)).isActive = true
+      default: rowStackView.widthAnchor.constraint(equalTo: keyboardView.widthAnchor).isActive = true
+      }
+      
       for letter in row.split(separator: " ") {
         let button = UIButton(type: .system)
+        button.backgroundColor = UIColor(red:0.52, green:0.08, blue:0.29, alpha:1.0)
+        
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5)
         button.setTitle(letter.capitalized, for: .normal)
-        button.backgroundColor = .black
         button.setTitleColor(.white, for: .normal)
-        button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 22, weight: .bold)
         button.sizeToFit()
         
         button.addTarget(self, action: #selector(keyboardButtonPressed), for: .touchUpInside)
@@ -168,7 +228,7 @@ class ViewController: UIViewController {
       if levelWord.capitalized == guessedWord.capitalized {
         let vc = UIAlertController(title: "YOU GOT IT", message: "Want to play again?", preferredStyle: .alert)
         vc.addAction(UIAlertAction(title: "Next Level", style: .default, handler: { [weak self] (action) in
-          self?.nextLevel()
+          self?.getLevel()
         }))
         present(vc, animated: true)
         return
@@ -177,15 +237,15 @@ class ViewController: UIViewController {
       livesCount -= 1
       
       if livesCount <= 0 {
-        let vc = UIAlertController(title: "GAME OVER", message: "Correct Answer: \(levelWord!).", preferredStyle: .alert)
+        let vc = UIAlertController(title: "GAME OVER", message: "Correct Answer: '\(levelWord!)'.", preferredStyle: .alert)
         vc.addAction(UIAlertAction(title: "Play Again?", style: .default, handler: { [weak self] (action) in
-          self?.nextLevel(fromBeginning: true)
+          self?.getLevel(fromBeginning: true)
         }))
         present(vc, animated: true)
       } else {
         
         // Present self-disappearing view
-        let vc = UIAlertController(title: "WRONG", message: "Attempts Left: \(livesCount)", preferredStyle: .actionSheet)
+        let vc = UIAlertController(title: "No '\(selectedLetter)' found.", message: "Attempts Left: \(livesCount)", preferredStyle: .actionSheet)
         vc.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         present(vc, animated: true)
         
@@ -195,7 +255,7 @@ class ViewController: UIViewController {
   }
   
   /**
-   Loads next level.
+   Loads new level.
      - Resets UILabels Array and removes current labels from the view
      - Resets lives count to default
      - Increments score count
@@ -205,20 +265,19 @@ class ViewController: UIViewController {
    - Parameters:
      - fromBeginning: if set to **true** the score is going to be reset to 0
   */
-  @objc func nextLevel(fromBeginning: Bool = false) {
+  @objc func getLevel(fromBeginning: Bool = false) {
     let labelsSubview = view.viewWithTag(22)
     labelsSubview?.removeFromSuperview()
     letterLabelsArray.removeAll()
     keyboardArray.forEach { (button) in
       button.isEnabled = true
-      button.backgroundColor = .black
+      button.backgroundColor = UIColor(red:0.52, green:0.08, blue:0.29, alpha:1.0)
     }
     
     livesCount = 7
     score      = (fromBeginning) ? 0 : score + 1
     levelWord  = getLevelWord()
     drawWord()
-    title = "Country: \(levelWord.count) letters"
   }
   
 }
