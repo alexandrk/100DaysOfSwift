@@ -15,7 +15,12 @@ class ViewController: UIViewController {
   @IBOutlet weak var button3: UIButton!
   
   var countries = [String]()
-  var score = 0
+  var score = 0 {
+    didSet {
+      navigationItem.rightBarButtonItem = UIBarButtonItem(title: "SCORE: \(score)", style: .plain, target: self, action: #selector(showCurrentScore))
+    }
+  }
+  var highestScore = 0
   var correctAnswer = 0
   var numberOfQuestionsAsked = 0
   
@@ -32,12 +37,14 @@ class ViewController: UIViewController {
     button2.layer.borderColor = UIColor.lightGray.cgColor
     button3.layer.borderColor = UIColor.lightGray.cgColor
     
-    navigationItem.rightBarButtonItem = UIBarButtonItem(title: "SCORE", style: .plain, target: self, action: #selector(showCurrentScore))
+    highestScore = UserDefaults.standard.integer(forKey: "highestScore")
+    
+    navigationItem.rightBarButtonItem = UIBarButtonItem(title: "SCORE: \(score)", style: .plain, target: self, action: #selector(showCurrentScore))
     
     askQuestion()
   }
 
-  func askQuestion(action: UIAlertAction! = nil) {
+  @objc func askQuestion(action: UIAlertAction! = nil) {
     
     numberOfQuestionsAsked += 1
     
@@ -53,40 +60,80 @@ class ViewController: UIViewController {
 
   @IBAction func buttonTapped(_ sender: UIButton) {
     
-    var acTitle = ""
+    var message = ""
+    var color: UIColor!
     
     if sender.tag == correctAnswer {
-      title = "CORRECT!"
+      message = "CORRECT!"
+      color = UIColor(red: 0, green: 0.63, blue: 0.42, alpha: 1.0)
       score += 1
     } else {
-      title = "WRONG!"
-      acTitle = "\(title!) That’s the flag of \(countries[sender.tag].uppercased())."
+      message = "WRONG!"
+      message += "\nThat’s \(countries[sender.tag].uppercased())."
+      color = UIColor(red: 0.63, green: 0.04, blue: 0.03, alpha: 1.0)
       score -= 1
     }
     
-    if numberOfQuestionsAsked < 10 {
-      let ac = UIAlertController(title: acTitle, message: "Your score is \(score)", preferredStyle: .alert)
-      ac.addAction(UIAlertAction(title: "Continue", style: .default, handler: askQuestion))
-      present(ac, animated: true, completion: nil)
+    if score > highestScore {
+      highestScore = score
+      save()
+      color = .purple
+      message = "!YAY!\nNEW HIGH SCORE: \n\(score)"
+      infoLabel(message: message, backgroundColor: color)
     } else {
-      let ac = UIAlertController(title: acTitle, message: """
-      GOOD JOB!
-      FINAL SCORE \(score) / \(numberOfQuestionsAsked) QUESTIONS.
-      WANT TO PLAY AGAIN?
-      """, preferredStyle: .alert)
-      ac.addAction(UIAlertAction(title: "RESTART", style: .default) { action in
-        self.numberOfQuestionsAsked = 0
-        self.score = 0
-        self.askQuestion()
-      })
-      present(ac, animated: true, completion: nil)
+      infoLabel(message: message, backgroundColor: color)
     }
+    perform(#selector(askQuestion), with: nil, afterDelay: 1)
+    
   }
   
   @objc func showCurrentScore() {
-    let alert = UIAlertController(title: "CURRENT SCORE:", message: "\(score) out of \(numberOfQuestionsAsked) question(s) asked.", preferredStyle: .alert)
+    let alert = UIAlertController(title: "Score Table:", message: "Questions Asked: \(numberOfQuestionsAsked)\nCurrent Score: \(score)\nHighest Score: \(highestScore)", preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
     present(alert, animated: true, completion: nil)
   }
+  
+  func save() {
+    UserDefaults.standard.set(highestScore, forKey: "highestScore")
+  }
+  
+  func infoLabel(message: String, backgroundColor: UIColor) {
+    
+    let label = UILabel()
+    label.numberOfLines = 0
+    label.font = UIFont.systemFont(ofSize: 30, weight: .bold)
+    label.backgroundColor = backgroundColor
+    label.textColor = .white
+    label.textAlignment = .center
+    label.layer.cornerRadius = 10
+    label.clipsToBounds = true
+    label.layer.borderWidth = 3
+    label.layer.borderColor = UIColor.black.cgColor
+    label.alpha = 0
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.text = message
+    
+    view.addSubview(label)
+    
+    NSLayoutConstraint.activate([
+      label.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+      label.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -50),
+      label.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+      label.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+      label.heightAnchor.constraint(equalToConstant: 150)
+      ])
+    
+    UIView.animate(withDuration: 0.7, animations: { [weak label] in
+      label?.alpha = 1
+    }) { (completed) in
+      UIView.animate(withDuration: 0.5, animations: {
+        label.alpha = 0
+      }, completion: { (completed) in
+        label.removeFromSuperview()
+      })
+    }
+    
+  }
+  
 }
 
