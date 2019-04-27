@@ -11,13 +11,29 @@ import UIKit
 class ViewController: UITableViewController {
 
   var allWords = [String]()
-  var usedWords = [String]()
+  var usedWords = [String]() {
+    didSet {
+      save(currentWord: nil, usedWords: usedWords)
+    }
+  }
+  var currentWord: String? {
+    didSet {
+      title = currentWord
+      save(currentWord: currentWord)
+    }
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
   
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(promptForAnswer))
-    navigationItem.leftBarButtonItem = UIBarButtonItem(title: "new word", style: .plain, target: self, action: #selector(startGame))
+    navigationItem.leftBarButtonItem = UIBarButtonItem(title: "new word", style: .plain, target: self, action: #selector(startNewGame))
+    
+    // Restore state if such exists
+    currentWord = UserDefaults.standard.string(forKey: "currentWord")
+    if let savedWords = UserDefaults.standard.array(forKey: "usedWords") as? [String] {
+      usedWords = savedWords
+    }
     
     if let file = Bundle.main.url(forResource: "start", withExtension: "txt") {
       if let startWords = try? String(contentsOf: file) {
@@ -29,12 +45,12 @@ class ViewController: UITableViewController {
       allWords = ["silkworm"]
     }
     
-    startGame()
+    tableView.reloadData()
   }
 
-  @objc func startGame() {
-    title = allWords.randomElement()
-    usedWords.removeAll(keepingCapacity: true)
+  @objc func startNewGame() {
+    usedWords.removeAll()
+    currentWord = allWords.randomElement()
     tableView.reloadData()
   }
   
@@ -129,6 +145,15 @@ class ViewController: UITableViewController {
     let ac = UIAlertController(title: title, message: message, preferredStyle: .alert)
     ac.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
     present(ac, animated: true, completion: nil)
+  }
+  
+  func save(currentWord: String? = nil, usedWords: [String]? = nil) {
+    if let currentWord = currentWord {
+      UserDefaults.standard.set(currentWord, forKey: "currentWord")
+    }
+    if let usedWords = usedWords {
+      UserDefaults.standard.set(usedWords, forKey: "usedWords")
+    }
   }
   
 }
