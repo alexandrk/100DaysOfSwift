@@ -29,20 +29,35 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     currentFilter = CIFilter(name: "CISepiaTone")
   }
   
-  @objc func importPicture() {
+  @objc func importPicture(_ sender: UIBarButtonItem) {
+    
+    let ac = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+    
+    if UIImagePickerController.isSourceTypeAvailable(.camera) {
+      ac.addAction(UIAlertAction(title: "Camera", style: .default, handler: showPicker))
+    }
+    ac.addAction(UIAlertAction(title: "Gallery", style: .default, handler: showPicker))
+    ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+    
+    if let popoverController = ac.popoverPresentationController {
+      popoverController.barButtonItem = sender
+    }
+    
+    present(ac, animated: true)
+  }
+
+  func showPicker(_ action: UIAlertAction) {
+    guard let actionTitle = action.title else { return }
+    
+    let sourceType: UIImagePickerController.SourceType = (actionTitle == "Camera") ? .camera : .photoLibrary
     let picker = UIImagePickerController()
     picker.allowsEditing = true
     picker.delegate = self
-    
-    if UIImagePickerController.isSourceTypeAvailable(.camera) {
-      picker.sourceType = .camera
-    } else {
-      picker.sourceType = .photoLibrary
-    }
+    picker.sourceType = sourceType
     
     present(picker, animated: true)
   }
-
+  
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
     var image: UIImage!
     
