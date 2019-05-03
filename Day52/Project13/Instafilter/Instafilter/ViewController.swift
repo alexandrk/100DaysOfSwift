@@ -99,8 +99,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
   }
   
   @IBAction func save(_ sender: Any) {
-    guard let image = imageView.image else { return }
+    guard let image = imageView.image else { showMessage(title: "No Image Selected!", message: "Please select an image first."); return }
     UIImageWriteToSavedPhotosAlbum(image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+  }
+  
+  func showMessage(title: String, message: String, notification: Bool = true) {
+    let vc = UIAlertController(title: title, message: message, preferredStyle: .alert)
+    
+    if notification {
+      vc.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+    }
+    
+    present(vc, animated: true)
   }
   
   @IBAction func intensityChanged(_ sender: Any) {
