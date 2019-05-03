@@ -13,6 +13,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
   @IBOutlet weak var imageView: UIImageView!
   @IBOutlet weak var intensity: UISlider!
+  @IBOutlet weak var changeFilterButton: UIButton!
   var currentImage: UIImage!
   
   var context: CIContext!
@@ -84,10 +85,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
   }
   
   func setFilter(action: UIAlertAction) {
-    guard currentImage != nil else { return }
+    guard currentImage != nil else { showMessage(title: "No Image Selected!", message: "Please select an image first."); return }
     guard let actionTitle = action.title else { return }
-      
+    
     currentFilter = CIFilter(name: actionTitle)
+    
+    changeFilterButton.setTitle(actionTitle, for: .normal)
     
     guard let beginImage = CIImage(image: currentImage) else {
       print("Unable to convert UIImage to CIImage")
