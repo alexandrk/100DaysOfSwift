@@ -31,6 +31,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
   
   @IBOutlet weak var changeFilterButton: UIButton!
   @IBOutlet weak var saveButton: UIButton!
+  @IBOutlet weak var stackFilterChanges: UISwitch!
   
   var currentImage: UIImage!
   
@@ -171,7 +172,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
   func setFilter(action: UIAlertAction) {
     resetSlidersSelectedValues()
     
+    if stackFilterChanges.isOn && imageView.image != nil { currentImage = imageView.image }
     if currentImage == nil { showMessage(title: "No Image Selected!", message: "Please select an image first."); return }
+    
     
     guard let actionTitle = action.title else { return }
     currentFilter = CIFilter(name: actionTitle)

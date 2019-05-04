@@ -251,18 +251,31 @@
                                     <action selector="save:" destination="BYZ-38-t0r" eventType="touchUpInside" id="C6o-fj-zTH"/>
                                 </connections>
                             </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="3kk-0c-vRD">
+                                <rect key="frame" x="20" y="835" width="51" height="31"/>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Stack Filter Changes" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P2R-7h-u23">
+                                <rect key="frame" x="94" y="838" width="180" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="3kk-0c-vRD" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="D20-nR-RMj"/>
                             <constraint firstItem="q9u-Gz-sNO" firstAttribute="firstBaseline" secondItem="tQL-nu-9yk" secondAttribute="firstBaseline" id="Dxm-ja-o1d"/>
                             <constraint firstItem="4X8-Xe-4mW" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="10" id="FX9-mP-jIo"/>
                             <constraint firstItem="4X8-Xe-4mW" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="H2V-gt-vtn"/>
                             <constraint firstItem="q9u-Gz-sNO" firstAttribute="leading" secondItem="4X8-Xe-4mW" secondAttribute="leading" id="IFe-f0-8Xf"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="4X8-Xe-4mW" secondAttribute="trailing" constant="10" id="T6P-6w-38l"/>
                             <constraint firstItem="XnB-Kc-s2a" firstAttribute="trailing" secondItem="4X8-Xe-4mW" secondAttribute="trailing" id="TR7-IS-LMQ"/>
+                            <constraint firstAttribute="bottom" secondItem="3kk-0c-vRD" secondAttribute="bottom" constant="30" id="VId-Xi-7vl"/>
                             <constraint firstItem="q9u-Gz-sNO" firstAttribute="top" secondItem="4X8-Xe-4mW" secondAttribute="bottom" constant="10" id="cZ3-Y8-jRv"/>
                             <constraint firstItem="tQL-nu-9yk" firstAttribute="width" secondItem="q9u-Gz-sNO" secondAttribute="width" id="cy0-z3-UYz"/>
                             <constraint firstItem="XnB-Kc-s2a" firstAttribute="leading" secondItem="4X8-Xe-4mW" secondAttribute="leading" id="h65-DC-NDE"/>
+                            <constraint firstItem="P2R-7h-u23" firstAttribute="centerY" secondItem="3kk-0c-vRD" secondAttribute="centerY" id="hln-2x-5Ta"/>
+                            <constraint firstItem="P2R-7h-u23" firstAttribute="leading" secondItem="3kk-0c-vRD" secondAttribute="trailing" constant="20" id="jaW-0a-lhf"/>
                             <constraint firstItem="XnB-Kc-s2a" firstAttribute="width" secondItem="4X8-Xe-4mW" secondAttribute="width" id="pHG-nj-otv"/>
                             <constraint firstItem="XnB-Kc-s2a" firstAttribute="top" secondItem="q9u-Gz-sNO" secondAttribute="bottom" constant="20" id="uGQ-Cc-Hcg"/>
                             <constraint firstItem="tQL-nu-9yk" firstAttribute="trailing" secondItem="4X8-Xe-4mW" secondAttribute="trailing" id="w99-Op-9Ym"/>
@@ -287,6 +300,7 @@
                         <outlet property="saveButton" destination="tQL-nu-9yk" id="zoj-RH-OvG"/>
                         <outlet property="scaleSlider" destination="nra-fT-7ee" id="dMU-Pa-CKP"/>
                         <outlet property="scaleSliderView" destination="u2Y-8j-WS0" id="T70-PU-Ibv"/>
+                        <outlet property="stackFilterChanges" destination="3kk-0c-vRD" id="rIz-Ie-Wie"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
