@@ -12,6 +12,8 @@ import UIKit
 class WhackSlot: SKNode {
   var charNode: SKSpriteNode!
   
+  var mudEmitter: SKEmitterNode!
+  
   var isVisible = false
   var isHit = false
   
@@ -19,6 +21,11 @@ class WhackSlot: SKNode {
     self.position = position
     
     let sprite = SKSpriteNode(imageNamed: "whackHole")
+    
+    mudEmitter = SKEmitterNode(fileNamed: "Mud")!
+    mudEmitter.zPosition = 2
+    sprite.addChild(mudEmitter)
+    
     addChild(sprite)
     
     let cropNode = SKCropNode()
@@ -41,6 +48,8 @@ class WhackSlot: SKNode {
     charNode.yScale = 1
     
     charNode.run(SKAction.moveBy(x: 0, y: 80, duration: 0.05))
+    mudEmitter.resetSimulation()
+    
     isVisible = true
     isHit = false
     
@@ -60,12 +69,24 @@ class WhackSlot: SKNode {
   func hide() {
     if !isVisible { return }
     
+    //mudEmitter.resetSimulation()
     charNode.run(SKAction.moveBy(x: 0, y: -80, duration: 0.15))
     isVisible = false
   }
   
   func hit() {
     isHit = true
+    
+    guard let smoke = SKEmitterNode(fileNamed: "Smoke") else { return }
+    smoke.position = charNode.position
+    smoke.zPosition = 2
+    
+    let smokeAction = SKAction.sequence([
+      SKAction.run { [weak self] in self?.addChild(smoke) },
+      SKAction.wait(forDuration: 1),
+      SKAction.run { smoke.removeFromParent() }])
+    
+    run(smokeAction)
     
     let delay = SKAction.wait(forDuration: 0.25)
     let hide = SKAction.moveBy(x: 0, y: -80, duration: 0.5)

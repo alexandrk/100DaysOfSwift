@@ -17,6 +17,9 @@
 		3FBAC0FE2283866C003F83C0 /* whackBad.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3FBAC0FC2283866C003F83C0 /* whackBad.caf */; };
 		3FBAC0FF2283866C003F83C0 /* whack.caf in Resources */ = {isa = PBXBuildFile; fileRef = 3FBAC0FD2283866C003F83C0 /* whack.caf */; };
 		3FBAC101228387F0003F83C0 /* WhackSlot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FBAC100228387F0003F83C0 /* WhackSlot.swift */; };
+		3FBAC1032283CE8F003F83C0 /* gameOver.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 3FBAC1022283CE8F003F83C0 /* gameOver.m4a */; };
+		3FBAC1072283D7D3003F83C0 /* Smoke.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3FBAC1062283D7D3003F83C0 /* Smoke.sks */; };
+		3FC9F7702284D16E00809AF5 /* Mud.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3FC9F76F2284D16E00809AF5 /* Mud.sks */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +35,9 @@
 		3FBAC0FC2283866C003F83C0 /* whackBad.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = whackBad.caf; sourceTree = "<group>"; };
 		3FBAC0FD2283866C003F83C0 /* whack.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = whack.caf; sourceTree = "<group>"; };
 		3FBAC100228387F0003F83C0 /* WhackSlot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhackSlot.swift; sourceTree = "<group>"; };
+		3FBAC1022283CE8F003F83C0 /* gameOver.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = gameOver.m4a; sourceTree = "<group>"; };
+		3FBAC1062283D7D3003F83C0 /* Smoke.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Smoke.sks; sourceTree = "<group>"; };
+		3FC9F76F2284D16E00809AF5 /* Mud.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = Mud.sks; path = ../../../../../../../../../Downloads/Mud.sks; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +81,9 @@
 				3FBAC0F6228385B2003F83C0 /* Info.plist */,
 				3FBAC0FD2283866C003F83C0 /* whack.caf */,
 				3FBAC0FC2283866C003F83C0 /* whackBad.caf */,
+				3FBAC1022283CE8F003F83C0 /* gameOver.m4a */,
+				3FBAC1062283D7D3003F83C0 /* Smoke.sks */,
+				3FC9F76F2284D16E00809AF5 /* Mud.sks */,
 			);
 			path = "Whack-a-Penguin";
 			sourceTree = "<group>";
@@ -142,6 +151,9 @@
 				3FBAC0E7228385B1003F83C0 /* GameScene.sks in Resources */,
 				3FBAC0F2228385B2003F83C0 /* Assets.xcassets in Resources */,
 				3FBAC0F5228385B2003F83C0 /* LaunchScreen.storyboard in Resources */,
+				3FC9F7702284D16E00809AF5 /* Mud.sks in Resources */,
+				3FBAC1032283CE8F003F83C0 /* gameOver.m4a in Resources */,
+				3FBAC1072283D7D3003F83C0 /* Smoke.sks in Resources */,
 				3FBAC0FF2283866C003F83C0 /* whack.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -305,6 +317,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 47Q8277ZWW;
 				INFOPLIST_FILE = "Whack-a-Penguin/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -323,6 +336,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 47Q8277ZWW;
 				INFOPLIST_FILE = "Whack-a-Penguin/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
