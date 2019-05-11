@@ -293,6 +293,7 @@
                         <outlet property="centerYSlider" destination="JWz-8k-1d9" id="t54-UI-H3v"/>
                         <outlet property="changeFilterButton" destination="q9u-Gz-sNO" id="RaW-Km-rkg"/>
                         <outlet property="imageView" destination="Rr4-px-EpB" id="SZ8-aA-fZ9"/>
+                        <outlet property="imageViewParentView" destination="4X8-Xe-4mW" id="axg-Vn-hqr"/>
                         <outlet property="intensitySlider" destination="S4S-45-S9J" id="EJP-YK-Zby"/>
                         <outlet property="intensitySliderView" destination="S8g-4j-7Ng" id="F2S-qA-qOg"/>
                         <outlet property="radiusSlider" destination="yrw-Bk-OqN" id="g63-EE-238"/>

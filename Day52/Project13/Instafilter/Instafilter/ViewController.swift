@@ -11,6 +11,7 @@ import UIKit
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
+  @IBOutlet weak var imageViewParentView: UIView!
   @IBOutlet weak var imageView: UIImageView!
   @IBOutlet weak var intensitySlider: UISlider!
   @IBOutlet weak var radiusSlider: UISlider!
@@ -109,9 +110,18 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     currentImage = image
     imageView.image = currentImage
+    imageView.alpha = 0
+    
+    perform(#selector(showImageView), with: nil, afterDelay: 0)
     
     resetSlidersSelectedValues()
     setSlidersValuesBasedOnImageDimensions(image)
+  }
+  
+  @objc func showImageView() {
+    UIView.animate(withDuration: 1) {
+      self.imageView.alpha = 1.0
+    }
   }
   
   /***
