@@ -266,9 +266,33 @@ class ViewController: UIViewController {
      - fromBeginning: if set to **true** the score is going to be reset to 0
   */
   @objc func getLevel(fromBeginning: Bool = false) {
+    
+    let transitionOptions: UIView.AnimationOptions = [.transitionFlipFromLeft]
+    let letterLabelsCount = letterLabelsArray.count
+    var letterLabelIncrement = 0
+    for letterLabel in letterLabelsArray {
+      UIView.transition(with: letterLabel, duration: 1, options: transitionOptions, animations: {
+        letterLabel.text = ""
+      }) { [weak self] (finished) in
+        letterLabelIncrement += 1
+        
+        // Checks if all animations finished
+        if (letterLabelIncrement == letterLabelsCount) {
+          self?.finishGetLevel(fromBeginning: fromBeginning)
+        }
+      }
+    }
+    
+    if letterLabelsArray.isEmpty {
+      finishGetLevel(fromBeginning: fromBeginning)
+    }
+  }
+  
+  func finishGetLevel(fromBeginning: Bool = false) {
     let labelsSubview = view.viewWithTag(22)
     labelsSubview?.removeFromSuperview()
     letterLabelsArray.removeAll()
+    
     keyboardArray.forEach { (button) in
       button.isEnabled = true
       button.backgroundColor = UIColor(red:0.52, green:0.08, blue:0.29, alpha:1.0)
