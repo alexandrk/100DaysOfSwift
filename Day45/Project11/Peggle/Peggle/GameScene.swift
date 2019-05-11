@@ -199,3 +199,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   
 }
 
+// TODO: Add levels (preposition obsticles randomly)
+// TODO: Make a better reset for when the player rans out of balls
+// TODO: Have some info screens
+// TODO: Change scoring system (points for removing obstacles, maybe if the ball falls into the green  pit at the end?)
