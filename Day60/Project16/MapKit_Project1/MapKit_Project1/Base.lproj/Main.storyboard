@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="4Po-CY-i6W">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="MapKit_Project1" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Ytc-ru-1S4">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="nuL-EZ-Y1z"/>
+                                </connections>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LFj-9Z-Mea">
+                                <rect key="frame" x="30" y="814" width="73" height="28"/>
+                                <inset key="contentEdgeInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                                <state key="normal" title="Standard"/>
+                                <connections>
+                                    <action selector="mapTypeHandler:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1Lb-BK-CvU"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="LFj-9Z-Mea" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="30" id="8PR-o6-Vsl"/>
+                            <constraint firstItem="LFj-9Z-Mea" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-20" id="Gqk-xe-hgo"/>
+                            <constraint firstAttribute="bottom" secondItem="Ytc-ru-1S4" secondAttribute="bottom" id="L5g-kr-7Pm"/>
+                            <constraint firstItem="Ytc-ru-1S4" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="Nzs-aN-45d"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Ytc-ru-1S4" secondAttribute="trailing" id="kTM-Tx-EmU"/>
+                            <constraint firstItem="Ytc-ru-1S4" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="nUT-BH-uaL"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="jgn-Cw-0ZN"/>
+                    <connections>
+                        <outlet property="mapType" destination="LFj-9Z-Mea" id="pO4-Uk-YcE"/>
+                        <outlet property="mapView" destination="Ytc-ru-1S4" id="ymt-9d-qkR"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="957.97101449275374" y="90.401785714285708"/>
+        </scene>
+        <!--Details View Controller-->
+        <scene sceneID="4bG-8M-RuA">
+            <objects>
+                <viewController storyboardIdentifier="WikiInfoController" id="GKf-pT-zlB" customClass="DetailsViewController" customModule="MapKit_Project1" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="OlD-W0-Uy0">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9sN-PG-k9r">
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <wkWebViewConfiguration key="configuration">
+                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                    <wkPreferences key="preferences"/>
+                                </wkWebViewConfiguration>
+                            </wkWebView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="nDk-DZ-HRy" firstAttribute="trailing" secondItem="9sN-PG-k9r" secondAttribute="trailing" id="bGN-5I-K02"/>
+                            <constraint firstItem="9sN-PG-k9r" firstAttribute="leading" secondItem="nDk-DZ-HRy" secondAttribute="leading" id="j3V-yO-m0c"/>
+                            <constraint firstItem="9sN-PG-k9r" firstAttribute="top" secondItem="nDk-DZ-HRy" secondAttribute="top" id="jxQ-VD-0m8"/>
+                            <constraint firstItem="nDk-DZ-HRy" firstAttribute="bottom" secondItem="9sN-PG-k9r" secondAttribute="bottom" id="l3H-Qo-f1j"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="nDk-DZ-HRy"/>
+                    </view>
+                    <connections>
+                        <outlet property="webView" destination="9sN-PG-k9r" id="Ypr-v8-a4X"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UKz-JJ-Tcf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1868.1159420289857" y="89.732142857142847"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="x7l-vY-1wa">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="4Po-CY-i6W" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="pfb-3A-JHl">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="CKP-CO-IFh"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aup-7v-rSs" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="47.826086956521742" y="90.401785714285708"/>
+        </scene>
+    </scenes>
+</document>
