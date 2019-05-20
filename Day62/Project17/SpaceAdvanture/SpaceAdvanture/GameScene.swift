@@ -131,7 +131,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   func didBegin(_ contact: SKPhysicsContact) {
     let explosion = SKEmitterNode(fileNamed: "explosion")!
     explosion.position = player.position
-    addChild(explosion)
+    
+    let addEmitterAction = SKAction.run({self.addChild(explosion)})
+    let emitterDuration = CGFloat(explosion.numParticlesToEmit) * explosion.particleLifetime
+    let wait = SKAction.wait(forDuration: TimeInterval(emitterDuration / 60))
+    let remove = SKAction.run({explosion.removeFromParent(); print("Emitter removed")})
+    let sequence = SKAction.sequence([addEmitterAction, wait, remove])
+    
+    run(sequence)
     
     player.removeFromParent()
     isGameOver = true
@@ -173,5 +180,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     playAgain.removeFromParent()
     playAgain = nil
     
+    for node in children {
+      print(node)
+    }
   }
 }
