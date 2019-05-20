@@ -20,6 +20,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   var possibleEmenies = ["ball", "hammer", "tv"]
   var gameTimer: Timer?
   var isGameOver = false
+  var allowMove = false
   
   var score = 0 {
     didSet {
@@ -53,6 +54,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   
   func createPlayer() {
     player = SKSpriteNode(imageNamed: "player")
+    player.name = "player"
     player.position = CGPoint(x: 100, y: 384)
     player.physicsBody = SKPhysicsBody(texture: player.texture!, size: player.size)
     player.physicsBody?.allowsRotation = false
@@ -89,21 +91,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   }
   
   override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+    if allowMove {
+      guard let touch = touches.first else { return }
+      var location = touch.location(in: self)
+      if location.y < 100 {
+        location.y = 100
+      } else if location.y > 668 {
+        location.y = 668
+      }
+      
+      player.position = location
+    }
+  }
+  
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard let touch = touches.first else { return }
-    var location = touch.location(in: self)
-    if location.y < 100 {
-      location.y = 100
-    } else if location.y > 668 {
-      location.y = 668
+    let location = touch.location(in: self)
+    let nodesAtLocation = nodes(at: location)
+
+    if nodesAtLocation.contains(where: { $0.name == "player" }) {
+      allowMove = true
     }
     
-    player.position = location
   }
   
   override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard let touch = touches.first else { return }
     let location = touch.location(in: self)
     let nodesAtLocation = nodes(at: location)
+    
+    // Prevents user from randomly tap anywhere on the screen to relocate the spaceship
+    allowMove = false
     
     if nodesAtLocation.contains(where: { $0.name == "playAgain" }) {
       restartGame()
