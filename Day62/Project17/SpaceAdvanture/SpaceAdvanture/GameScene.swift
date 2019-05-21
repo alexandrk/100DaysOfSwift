@@ -18,9 +18,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   var playAgain: SKLabelNode!
   
   var possibleEmenies = ["ball", "hammer", "tv"]
-  var gameTimer: Timer?
   var isGameOver = false
   var allowMove = false
+  
+  var gameTimer: Timer?
+  private var timerInterval: Double = 1
+  private var enemiesCreated = 0
   
   var score = 0 {
     didSet {
@@ -49,7 +52,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     physicsWorld.gravity = .zero
     physicsWorld.contactDelegate = self
     
-    gameTimer = Timer.scheduledTimer(timeInterval: 0.35, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
+    gameTimer = Timer.scheduledTimer(timeInterval: timerInterval, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
   }
   
   func createPlayer() {
@@ -65,6 +68,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   @objc func createEnemy() {
     guard let enemy = possibleEmenies.randomElement() else { return }
     
+    // Tracks number of enemies created
+    enemiesCreated += 1
+    
     let sprite = SKSpriteNode(imageNamed: enemy)
     sprite.position = CGPoint(x: 1200, y: Int.random(in: 50...736))
     sprite.name = "enemy"
@@ -76,6 +82,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     sprite.physicsBody?.angularVelocity = 5
     sprite.physicsBody?.linearDamping = 0
     sprite.physicsBody?.angularDamping = 0
+    
+    if enemiesCreated % 3 == 0 && timerInterval > 0.1 {
+      adjustTimer()
+    }
+  }
+  
+  private func adjustTimer() {
+    gameTimer?.invalidate()
+    
+    // Note, timer interval cannot be 0
+    timerInterval = (timerInterval - 0.1) < 0.1 ? 0.1 : timerInterval - 0.1
+    print(timerInterval)
+    gameTimer = Timer.scheduledTimer(timeInterval: timerInterval, target: self, selector: #selector(createEnemy), userInfo: nil, repeats: true)
   }
   
   override func update(_ currentTime: TimeInterval) {
@@ -135,7 +154,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let addEmitterAction = SKAction.run({self.addChild(explosion)})
     let emitterDuration = CGFloat(explosion.numParticlesToEmit) * explosion.particleLifetime
     let wait = SKAction.wait(forDuration: TimeInterval(emitterDuration / 60))
-    let remove = SKAction.run({explosion.removeFromParent(); print("Emitter removed")})
+    let remove = SKAction.run({explosion.removeFromParent()})
     let sequence = SKAction.sequence([addEmitterAction, wait, remove])
     
     run(sequence)
@@ -174,14 +193,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
       }
     }
     score = 0
+    enemiesCreated = 0
+    timerInterval = 1
     createPlayer()
     isGameOver = false
     
     playAgain.removeFromParent()
     playAgain = nil
-    
-    for node in children {
-      print(node)
-    }
   }
 }
