@@ -66,6 +66,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   }
   
   @objc func createEnemy() {
+    
+    guard !isGameOver else { return }
     guard let enemy = possibleEmenies.randomElement() else { return }
     
     // Tracks number of enemies created
