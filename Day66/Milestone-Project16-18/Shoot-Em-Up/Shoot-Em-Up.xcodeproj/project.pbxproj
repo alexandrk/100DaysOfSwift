@@ -8,6 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		3F0E48C5229B71B0003EBB4B /* bodyFallDirt.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48C4229B71B0003EBB4B /* bodyFallDirt.mp3 */; };
+		3F0E48E9229C6056003EBB4B /* CharacterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F0E48E8229C6056003EBB4B /* CharacterType.swift */; };
+		3F0E48F0229C66FD003EBB4B /* FallenAngel_2_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48EA229C66FD003EBB4B /* FallenAngel_2_Walking.atlas */; };
+		3F0E48F1229C66FD003EBB4B /* FallenAngel_1_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48EB229C66FD003EBB4B /* FallenAngel_1_Walking.atlas */; };
+		3F0E48F2229C66FD003EBB4B /* FantasyTroll_2_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48EC229C66FD003EBB4B /* FantasyTroll_2_Walking.atlas */; };
+		3F0E48F3229C66FD003EBB4B /* FallenAngel_3_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48ED229C66FD003EBB4B /* FallenAngel_3_Walking.atlas */; };
+		3F0E48F4229C66FD003EBB4B /* FantasyTroll_1_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48EE229C66FD003EBB4B /* FantasyTroll_1_Walking.atlas */; };
+		3F0E48F5229C66FD003EBB4B /* FantasyTroll_3_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48EF229C66FD003EBB4B /* FantasyTroll_3_Walking.atlas */; };
+		3F0E48FC229C670D003EBB4B /* FantasyElf_1_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48F6229C670D003EBB4B /* FantasyElf_1_Walking.atlas */; };
+		3F0E48FD229C670D003EBB4B /* FantasyFairy_3_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48F7229C670D003EBB4B /* FantasyFairy_3_Walking.atlas */; };
+		3F0E48FE229C670D003EBB4B /* FantasyElf_3_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48F8229C670D003EBB4B /* FantasyElf_3_Walking.atlas */; };
+		3F0E48FF229C670D003EBB4B /* FantasyElf_2_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48F9229C670D003EBB4B /* FantasyElf_2_Walking.atlas */; };
+		3F0E4900229C670D003EBB4B /* FantasyFairy_2_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48FA229C670D003EBB4B /* FantasyFairy_2_Walking.atlas */; };
+		3F0E4901229C670D003EBB4B /* FantasyFairy_1_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F0E48FB229C670D003EBB4B /* FantasyFairy_1_Walking.atlas */; };
 		3F3C27FC2299F57200A7A585 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3C27FB2299F57200A7A585 /* AppDelegate.swift */; };
 		3F3C27FE2299F57200A7A585 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 3F3C27FD2299F57200A7A585 /* GameScene.sks */; };
 		3F3C28022299F57200A7A585 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3C28012299F57200A7A585 /* GameScene.swift */; };
@@ -15,14 +28,24 @@
 		3F3C28072299F57200A7A585 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F3C28052299F57200A7A585 /* Main.storyboard */; };
 		3F3C28092299F57200A7A585 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F3C28082299F57200A7A585 /* Assets.xcassets */; };
 		3F3C280C2299F57200A7A585 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F3C280A2299F57200A7A585 /* LaunchScreen.storyboard */; };
-		3F3C2814229A05ED00A7A585 /* FallenAngel_1_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F3C2813229A05ED00A7A585 /* FallenAngel_1_Walking.atlas */; };
-		3F3C2816229A1B0100A7A585 /* Angel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3C2815229A1B0100A7A585 /* Angel.swift */; };
-		3F3C2819229A1B8800A7A585 /* FallenAngel_3_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F3C2817229A1B8800A7A585 /* FallenAngel_3_Walking.atlas */; };
-		3F3C281A229A1B8800A7A585 /* FallenAngel_2_Walking.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 3F3C2818229A1B8800A7A585 /* FallenAngel_2_Walking.atlas */; };
+		3F3C2816229A1B0100A7A585 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3C2815229A1B0100A7A585 /* Entity.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3F0E48C4229B71B0003EBB4B /* bodyFallDirt.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bodyFallDirt.mp3; sourceTree = "<group>"; };
+		3F0E48E8229C6056003EBB4B /* CharacterType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterType.swift; sourceTree = "<group>"; };
+		3F0E48EA229C66FD003EBB4B /* FallenAngel_2_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FallenAngel_2_Walking.atlas; path = "Shoot-Em-Up/FallenAngel_2_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48EB229C66FD003EBB4B /* FallenAngel_1_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FallenAngel_1_Walking.atlas; path = "Shoot-Em-Up/FallenAngel_1_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48EC229C66FD003EBB4B /* FantasyTroll_2_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FantasyTroll_2_Walking.atlas; path = "Shoot-Em-Up/FantasyTroll_2_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48ED229C66FD003EBB4B /* FallenAngel_3_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FallenAngel_3_Walking.atlas; path = "Shoot-Em-Up/FallenAngel_3_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48EE229C66FD003EBB4B /* FantasyTroll_1_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FantasyTroll_1_Walking.atlas; path = "Shoot-Em-Up/FantasyTroll_1_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48EF229C66FD003EBB4B /* FantasyTroll_3_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FantasyTroll_3_Walking.atlas; path = "Shoot-Em-Up/FantasyTroll_3_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48F6229C670D003EBB4B /* FantasyElf_1_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FantasyElf_1_Walking.atlas; path = "Shoot-Em-Up/FantasyElf_1_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48F7229C670D003EBB4B /* FantasyFairy_3_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FantasyFairy_3_Walking.atlas; path = "Shoot-Em-Up/FantasyFairy_3_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48F8229C670D003EBB4B /* FantasyElf_3_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FantasyElf_3_Walking.atlas; path = "Shoot-Em-Up/FantasyElf_3_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48F9229C670D003EBB4B /* FantasyElf_2_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FantasyElf_2_Walking.atlas; path = "Shoot-Em-Up/FantasyElf_2_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48FA229C670D003EBB4B /* FantasyFairy_2_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FantasyFairy_2_Walking.atlas; path = "Shoot-Em-Up/FantasyFairy_2_Walking.atlas"; sourceTree = SOURCE_ROOT; };
+		3F0E48FB229C670D003EBB4B /* FantasyFairy_1_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; name = FantasyFairy_1_Walking.atlas; path = "Shoot-Em-Up/FantasyFairy_1_Walking.atlas"; sourceTree = SOURCE_ROOT; };
 		3F3C27F82299F57200A7A585 /* Shoot-Em-Up.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shoot-Em-Up.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F3C27FB2299F57200A7A585 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3F3C27FD2299F57200A7A585 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -32,10 +55,7 @@
 		3F3C28082299F57200A7A585 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3F3C280B2299F57200A7A585 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3F3C280D2299F57200A7A585 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3F3C2813229A05ED00A7A585 /* FallenAngel_1_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = FallenAngel_1_Walking.atlas; sourceTree = "<group>"; };
-		3F3C2815229A1B0100A7A585 /* Angel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Angel.swift; sourceTree = "<group>"; };
-		3F3C2817229A1B8800A7A585 /* FallenAngel_3_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = FallenAngel_3_Walking.atlas; sourceTree = "<group>"; };
-		3F3C2818229A1B8800A7A585 /* FallenAngel_2_Walking.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = FallenAngel_2_Walking.atlas; sourceTree = "<group>"; };
+		3F3C2815229A1B0100A7A585 /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +69,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3F0E48CC229C51C9003EBB4B /* Bad */ = {
+			isa = PBXGroup;
+			children = (
+				3F0E48EB229C66FD003EBB4B /* FallenAngel_1_Walking.atlas */,
+				3F0E48EA229C66FD003EBB4B /* FallenAngel_2_Walking.atlas */,
+				3F0E48ED229C66FD003EBB4B /* FallenAngel_3_Walking.atlas */,
+				3F0E48EE229C66FD003EBB4B /* FantasyTroll_1_Walking.atlas */,
+				3F0E48EC229C66FD003EBB4B /* FantasyTroll_2_Walking.atlas */,
+				3F0E48EF229C66FD003EBB4B /* FantasyTroll_3_Walking.atlas */,
+			);
+			path = Bad;
+			sourceTree = "<group>";
+		};
+		3F0E48CD229C51EA003EBB4B /* Good */ = {
+			isa = PBXGroup;
+			children = (
+				3F0E48F6229C670D003EBB4B /* FantasyElf_1_Walking.atlas */,
+				3F0E48F9229C670D003EBB4B /* FantasyElf_2_Walking.atlas */,
+				3F0E48F8229C670D003EBB4B /* FantasyElf_3_Walking.atlas */,
+				3F0E48FB229C670D003EBB4B /* FantasyFairy_1_Walking.atlas */,
+				3F0E48FA229C670D003EBB4B /* FantasyFairy_2_Walking.atlas */,
+				3F0E48F7229C670D003EBB4B /* FantasyFairy_3_Walking.atlas */,
+			);
+			path = Good;
+			sourceTree = "<group>";
+		};
 		3F3C27EF2299F57200A7A585 = {
 			isa = PBXGroup;
 			children = (
@@ -71,14 +117,14 @@
 				3F3C27FB2299F57200A7A585 /* AppDelegate.swift */,
 				3F3C27FD2299F57200A7A585 /* GameScene.sks */,
 				3F3C28012299F57200A7A585 /* GameScene.swift */,
-				3F3C2815229A1B0100A7A585 /* Angel.swift */,
+				3F3C2815229A1B0100A7A585 /* Entity.swift */,
 				3F3C28032299F57200A7A585 /* GameViewController.swift */,
 				3F3C28052299F57200A7A585 /* Main.storyboard */,
 				3F3C28082299F57200A7A585 /* Assets.xcassets */,
+				3F0E48CD229C51EA003EBB4B /* Good */,
+				3F0E48CC229C51C9003EBB4B /* Bad */,
+				3F0E48E8229C6056003EBB4B /* CharacterType.swift */,
 				3F0E48C4229B71B0003EBB4B /* bodyFallDirt.mp3 */,
-				3F3C2813229A05ED00A7A585 /* FallenAngel_1_Walking.atlas */,
-				3F3C2818229A1B8800A7A585 /* FallenAngel_2_Walking.atlas */,
-				3F3C2817229A1B8800A7A585 /* FallenAngel_3_Walking.atlas */,
 				3F3C280A2299F57200A7A585 /* LaunchScreen.storyboard */,
 				3F3C280D2299F57200A7A585 /* Info.plist */,
 			);
@@ -143,14 +189,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F0E48FE229C670D003EBB4B /* FantasyElf_3_Walking.atlas in Resources */,
 				3F3C28072299F57200A7A585 /* Main.storyboard in Resources */,
 				3F3C27FE2299F57200A7A585 /* GameScene.sks in Resources */,
-				3F3C2814229A05ED00A7A585 /* FallenAngel_1_Walking.atlas in Resources */,
-				3F3C2819229A1B8800A7A585 /* FallenAngel_3_Walking.atlas in Resources */,
 				3F3C28092299F57200A7A585 /* Assets.xcassets in Resources */,
+				3F0E48F1229C66FD003EBB4B /* FallenAngel_1_Walking.atlas in Resources */,
+				3F0E48FD229C670D003EBB4B /* FantasyFairy_3_Walking.atlas in Resources */,
 				3F3C280C2299F57200A7A585 /* LaunchScreen.storyboard in Resources */,
-				3F3C281A229A1B8800A7A585 /* FallenAngel_2_Walking.atlas in Resources */,
+				3F0E48F0229C66FD003EBB4B /* FallenAngel_2_Walking.atlas in Resources */,
+				3F0E48FC229C670D003EBB4B /* FantasyElf_1_Walking.atlas in Resources */,
+				3F0E4901229C670D003EBB4B /* FantasyFairy_1_Walking.atlas in Resources */,
+				3F0E48F5229C66FD003EBB4B /* FantasyTroll_3_Walking.atlas in Resources */,
 				3F0E48C5229B71B0003EBB4B /* bodyFallDirt.mp3 in Resources */,
+				3F0E48F3229C66FD003EBB4B /* FallenAngel_3_Walking.atlas in Resources */,
+				3F0E48F4229C66FD003EBB4B /* FantasyTroll_1_Walking.atlas in Resources */,
+				3F0E4900229C670D003EBB4B /* FantasyFairy_2_Walking.atlas in Resources */,
+				3F0E48F2229C66FD003EBB4B /* FantasyTroll_2_Walking.atlas in Resources */,
+				3F0E48FF229C670D003EBB4B /* FantasyElf_2_Walking.atlas in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -161,8 +216,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F0E48E9229C6056003EBB4B /* CharacterType.swift in Sources */,
 				3F3C28022299F57200A7A585 /* GameScene.swift in Sources */,
-				3F3C2816229A1B0100A7A585 /* Angel.swift in Sources */,
+				3F3C2816229A1B0100A7A585 /* Entity.swift in Sources */,
 				3F3C28042299F57200A7A585 /* GameViewController.swift in Sources */,
 				3F3C27FC2299F57200A7A585 /* AppDelegate.swift in Sources */,
 			);

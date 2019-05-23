@@ -11,7 +11,7 @@ import GameplayKit
 
 class GameScene: SKScene {
   
-  private var enemies = [Angel]()
+  private var entities = [Entity]()
   private var counter = 0
   
   override func didMove(to view: SKView) {
@@ -34,26 +34,26 @@ class GameScene: SKScene {
     
     Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { (timer) in
       if self.counter < 10 {
-        self.createEnemy(atRow: .bottom, scale: .large, direction: .right)
+        self.createEntity(atRow: .bottom, scale: .large, direction: .right)
       }
       if self.counter < 10 {
-        self.createEnemy(atRow: .middle, scale: .medium, direction: .left)
+        self.createEntity(atRow: .middle, scale: .medium, direction: .left)
       }
       if self.counter < 10 {
-        self.createEnemy(atRow: .top, scale: .small, direction: .right)
+        self.createEntity(atRow: .top, scale: .small, direction: .right)
       }
       self.counter += 1
     }
   }
   
-  func createEnemy(atRow: YOffset, scale: AngelSize, direction: Direction) {
-    let angel = Angel(screenSize: self.frame)
-    angel.zPosition = 0
-    angel.configure(atRow: atRow, scale: scale, direction: direction)
-    addChild(angel)
-    angel.animate()
-    angel.move(direction: direction)
-    enemies.append(angel)
+  func createEntity(atRow: YOffset, scale: EntitySize, direction: Direction) {
+    let entity = Entity(screenSize: self.frame)
+    entity.zPosition = 0
+    entity.configure(atRow: atRow, scale: scale, direction: direction)
+    addChild(entity)
+    entity.animate()
+    entity.move(direction: direction)
+    entities.append(entity)
   }
   
   override func update(_ currentTime: TimeInterval) {
@@ -72,30 +72,16 @@ class GameScene: SKScene {
     print("----------------------------------")
   }
   
-  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     let touch = touches.first!
     let location = touch.location(in: self)
 
     let touchesNodes = nodes(at: location)
     
-    for node in touchesNodes where node.name != nil && node.name!.contains("enemy") {
+    for node in touchesNodes where node.name != nil && node.name!.contains("bad") {
       let sound = SKAction.playSoundFileNamed("bodyFallDirt.mp3", waitForCompletion: true)
       run(sound)
       node.removeFromParent()
     }
-  }
-  
-  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//    let touch = touches.first!
-//    let location = touch.location(in: self)
-//    var directionMultiplier: CGFloat
-//
-//    if location.x < frame.midX {
-//      directionMultiplier = -1.0
-//    } else {
-//      directionMultiplier = 1.0
-//    }
-//
-//    angel.xScale = abs(angel.xScale) * directionMultiplier
   }
 }
