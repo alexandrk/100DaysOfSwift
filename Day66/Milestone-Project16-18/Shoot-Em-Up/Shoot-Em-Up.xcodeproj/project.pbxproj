@@ -29,6 +29,7 @@
 		3F3C28092299F57200A7A585 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F3C28082299F57200A7A585 /* Assets.xcassets */; };
 		3F3C280C2299F57200A7A585 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3F3C280A2299F57200A7A585 /* LaunchScreen.storyboard */; };
 		3F3C2816229A1B0100A7A585 /* Entity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3C2815229A1B0100A7A585 /* Entity.swift */; };
+		3F7CD959229F126200A942FF /* missedShot.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3F7CD958229F126200A942FF /* missedShot.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		3F3C280B2299F57200A7A585 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3F3C280D2299F57200A7A585 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3F3C2815229A1B0100A7A585 /* Entity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Entity.swift; sourceTree = "<group>"; };
+		3F7CD958229F126200A942FF /* missedShot.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = missedShot.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 				3F0E48CC229C51C9003EBB4B /* Bad */,
 				3F0E48E8229C6056003EBB4B /* CharacterType.swift */,
 				3F0E48C4229B71B0003EBB4B /* bodyFallDirt.mp3 */,
+				3F7CD958229F126200A942FF /* missedShot.mp3 */,
 				3F3C280A2299F57200A7A585 /* LaunchScreen.storyboard */,
 				3F3C280D2299F57200A7A585 /* Info.plist */,
 			);
@@ -193,6 +196,7 @@
 				3F3C28072299F57200A7A585 /* Main.storyboard in Resources */,
 				3F3C27FE2299F57200A7A585 /* GameScene.sks in Resources */,
 				3F3C28092299F57200A7A585 /* Assets.xcassets in Resources */,
+				3F7CD959229F126200A942FF /* missedShot.mp3 in Resources */,
 				3F0E48F1229C66FD003EBB4B /* FallenAngel_1_Walking.atlas in Resources */,
 				3F0E48FD229C670D003EBB4B /* FantasyFairy_3_Walking.atlas in Resources */,
 				3F3C280C2299F57200A7A585 /* LaunchScreen.storyboard in Resources */,

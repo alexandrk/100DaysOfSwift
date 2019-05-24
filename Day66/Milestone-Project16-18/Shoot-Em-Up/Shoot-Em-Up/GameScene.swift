@@ -103,6 +103,8 @@ class GameScene: SKScene {
         score += 5
         node.removeFromParent()
       } else if node.name!.contains("good") {
+        let sound = SKAction.playSoundFileNamed("missedShot.mp3", waitForCompletion: true)
+        run(sound)
         score -= 5
       }
     }
