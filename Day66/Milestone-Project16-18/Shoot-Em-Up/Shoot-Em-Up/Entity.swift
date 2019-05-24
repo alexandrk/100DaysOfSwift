@@ -31,6 +31,7 @@ class Entity: SKNode {
   var sprite: SKSpriteNode!
   var characterType: CharacterType!
   var walkingFrames: [SKTexture] = []
+  var direction: Direction!
   var screenSize: CGRect!
   
   init(screenSize: CGRect) {
@@ -44,6 +45,7 @@ class Entity: SKNode {
   
   func configure(atRow yOffset: YOffset, scale: EntitySize, direction: Direction) {
     characterType = CharacterType(characterType: CharacterType.characters.randomElement()!)
+    self.direction = direction
     configureAnimation()
     
     let firstFrameTexture = walkingFrames[0]
@@ -90,7 +92,7 @@ class Entity: SKNode {
               withKey:"characterWalking")
   }
   
-  func move(direction: Direction) {
+  func move() {
     if direction == .right {
       self.run(SKAction.moveBy(x: screenSize.width + 300, y: 0, duration: 10))
     } else {

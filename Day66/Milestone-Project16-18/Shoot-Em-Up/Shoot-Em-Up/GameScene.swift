@@ -13,6 +13,12 @@ class GameScene: SKScene {
   
   private var entities = [Entity]()
   private var counter = 0
+  private var score = 0 {
+    didSet {
+      scoreLabel.text = "Score: \(score)"
+    }
+  }
+  private var scoreLabel: SKLabelNode!
   
   override func didMove(to view: SKView) {
 //    let background = SKSpriteNode(imageNamed: "BG_Decor")
@@ -31,6 +37,12 @@ class GameScene: SKScene {
 //    foreground.zPosition = 0
 //    addChild(foreground)
     
+    scoreLabel = SKLabelNode(text: "Score: 0")
+    scoreLabel.fontName = "Chalkduster"
+    scoreLabel.fontSize = 48
+    scoreLabel.position = CGPoint(x: 8, y: 8)
+    scoreLabel.horizontalAlignmentMode = .left
+    addChild(scoreLabel)
     
     Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { (timer) in
       if self.counter < 10 {
@@ -52,24 +64,29 @@ class GameScene: SKScene {
     entity.configure(atRow: atRow, scale: scale, direction: direction)
     addChild(entity)
     entity.animate()
-    entity.move(direction: direction)
+    entity.move()
     entities.append(entity)
   }
   
   override func update(_ currentTime: TimeInterval) {
     // Called before each frame is rendered
     
-    print("Total nodes: \(children.count)")
-    print("----------------------------------")
     for node in children {
+      
+       if let entity = node as? Entity {
+        if entity.characterType.side == .bad {
+          if (entity.direction == .right && entity.position.x > frame.width) ||
+             (entity.direction == .left && entity.position.x < 0) {
+            score -= 1
+            node.removeFromParent()
+          }
+        }
+      }
+      
       if node.position.x > frame.width + 150 || node.position.x < -150 {
         node.removeFromParent()
       }
-      else {
-        print(node.position.x, separator: ", ")
-      }
     }
-    print("----------------------------------")
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -78,10 +95,16 @@ class GameScene: SKScene {
 
     let touchesNodes = nodes(at: location)
     
-    for node in touchesNodes where node.name != nil && node.name!.contains("bad") {
-      let sound = SKAction.playSoundFileNamed("bodyFallDirt.mp3", waitForCompletion: true)
-      run(sound)
-      node.removeFromParent()
+    for node in touchesNodes where node.name != nil {
+      
+      if node.name!.contains("bad") {
+        let sound = SKAction.playSoundFileNamed("bodyFallDirt.mp3", waitForCompletion: true)
+        run(sound)
+        score += 5
+        node.removeFromParent()
+      } else if node.name!.contains("good") {
+        score -= 5
+      }
     }
   }
 }
