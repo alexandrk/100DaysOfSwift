@@ -12,12 +12,19 @@ import GameplayKit
 class GameScene: SKScene {
   
   private var entities = [Entity]()
-  private var bullets = [SKSpriteNode]()
+  private var fullBullets = [SKSpriteNode]()
+  private var emptyBullets = [SKSpriteNode]()
   private var reloadSprite: SKLabelNode!
+  private let textFontAttributes: [NSAttributedString.Key: Any] = [
+    NSAttributedString.Key.font: UIFont(name: "AmericanTypewriter-Bold", size: 48) ?? UIFont.systemFont(ofSize: 48),
+    NSAttributedString.Key.foregroundColor: UIColor(red: 0.31, green: 0.29, blue: 0.33, alpha: 1.0),
+    NSAttributedString.Key.strokeColor: UIColor.white,
+    NSAttributedString.Key.strokeWidth: -2
+  ]
   private var counter = 0
   private var score = 0 {
     didSet {
-      scoreLabel.text = "Score: \(score)"
+      scoreLabel.attributedText = NSAttributedString(string: "Score: \(score)", attributes: textFontAttributes)
     }
   }
   private var scoreLabel: SKLabelNode!
@@ -39,16 +46,14 @@ class GameScene: SKScene {
 //    foreground.zPosition = 0
 //    addChild(foreground)
     
-    scoreLabel = SKLabelNode(text: "Score: 0")
-    scoreLabel.fontName = "Chalkduster"
-    scoreLabel.fontSize = 48
+    scoreLabel = SKLabelNode(attributedText: NSAttributedString(string: "Score: 0", attributes: textFontAttributes))
     scoreLabel.position = CGPoint(x: 8, y: 8)
     scoreLabel.horizontalAlignmentMode = .left
     addChild(scoreLabel)
 
-    reloadSprite = SKLabelNode(text: "RELOAD!")
-    reloadSprite.position = CGPoint(x: frame.width - 125, y: 10)
-    reloadSprite.fontSize = 48
+    reloadSprite = SKLabelNode(attributedText: NSAttributedString(string: "RELOAD!", attributes: textFontAttributes))
+    reloadSprite.zPosition = 5
+    reloadSprite.position = CGPoint(x: frame.width - 125, y: 100)
     
     Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { (timer) in
       if self.counter < 10 {
@@ -76,19 +81,19 @@ class GameScene: SKScene {
     for _ in 1...6 {
       let bullet = SKSpriteNode(imageNamed: "bullet-full")
       bulletPosition = CGPoint(x: xPosition, y: yPosition)
+      bullet.name = "bullet-full"
       bullet.position = bulletPosition
       bullet.anchorPoint = CGPoint(x: 0, y: 0)
       bullet.zPosition = 3
       bullet.xScale = 0.35
       bullet.yScale = 0.35
-      bullet.name = "bullet-full"
       
       addChild(bullet)
-      bullets.append(bullet)
+      fullBullets.append(bullet)
       
-      xPosition -= 35
+      xPosition -= 36
     }
-    bullets.reverse()
+    fullBullets.reverse()
     
   }
   
@@ -102,12 +107,11 @@ class GameScene: SKScene {
     entities.append(entity)
   }
   
+  // Called before each frame is rendered
   override func update(_ currentTime: TimeInterval) {
-    // Called before each frame is rendered
-    
     for node in children {
-      
-       if let entity = node as? Entity {
+      // Subtraсts points if the "Bad / Enemy" entity reaches the other side alive
+      if let entity = node as? Entity {
         if entity.characterType.side == .bad {
           if (entity.direction == .right && entity.position.x > frame.width) ||
              (entity.direction == .left && entity.position.x < 0) {
@@ -117,33 +121,46 @@ class GameScene: SKScene {
         }
       }
       
+      // Removes all nodes that go off screen
       if node.position.x > frame.width + 150 || node.position.x < -150 {
+        // Does attempt to remove "Bad / Enemy" entities that reached the other side alive,
+        // but doesn't fail if the node is already removed from parent. So, is fine.
         node.removeFromParent()
       }
     }
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-    let touch = touches.first!
-    let location = touch.location(in: self)
-
-    let touchesNodes = nodes(at: location)
+    let touch         = touches.first!
+    let location      = touch.location(in: self)
+    let touchesNodes  = nodes(at: location)
     
+    // Tries to reload bullets, if one of the  bullet is touched
     if touchesNodes.contains(where: { $0.name?.contains("bullet") ?? false }) {
-      reloadBullets(touchesNodes: touchesNodes)
-    } else {
-      subtractBullet()
+      reloadBullets()
+    }
+    // Else uses one of the bullets
+    else {
+      if !fullBullets.isEmpty {
+        subtractBullet()
+        run(SKAction.playSoundFileNamed("shotFired.mp3", waitForCompletion: false))
+      } else {
+        run(SKAction.playSoundFileNamed("dryShot.mp3", waitForCompletion: false))
+      }
     }
     
+    // Return if no more bullets left
+    guard !fullBullets.isEmpty else { return }
+    
+    // See if any of the Entities were hit (either bad or good ones)
     for node in touchesNodes where node.name != nil {
-      
       if node.name!.contains("bad") {
-        let sound = SKAction.playSoundFileNamed("bodyFallDirt.mp3", waitForCompletion: true)
+        let sound = SKAction.playSoundFileNamed("bodyFallDirt.mp3", waitForCompletion: false)
         run(sound)
         score += 5
         node.removeFromParent()
       } else if node.name!.contains("good") {
-        let sound = SKAction.playSoundFileNamed("missedShot.mp3", waitForCompletion: true)
+        let sound = SKAction.playSoundFileNamed("missedShot.mp3", waitForCompletion: false)
         run(sound)
         score -= 5
       }
@@ -155,67 +172,47 @@ class GameScene: SKScene {
     
     guard reloadSprite.parent == nil else { return }
     
-    if let lastUnusedBullet = bullets.last(where: {$0.name == "bullet-full"}) {
-      lastUnusedBullet.texture = SKTexture(imageNamed: "bullet-used")
-      lastUnusedBullet.name = "bullet-used"
-    } else {
-//      let reloadSprite = SKSpriteNode(imageNamed: "reload")
-//      reloadSprite.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
-//      //reloadSprite.anchorPoint = CGPoint(x: reloadSprite.frame.width / 2, y: 0)
-//      reloadSprite.zPosition = 3
-//      reloadSprite.xScale = 0.35
-//      reloadSprite.yScale = 0.35
+    if !fullBullets.isEmpty {
+      let usedBullet = fullBullets.popLast()!
+      usedBullet.texture = SKTexture(imageNamed: "bullet-used")
+      usedBullet.name = "bullet-used"
+      emptyBullets.append(usedBullet)
       
-      let fadeOutAction = SKAction.fadeOut(withDuration: 0.5)
-      let fadeInAction = SKAction.fadeIn(withDuration: 0.5)
-      let moveAction = SKAction.move(by: CGVector(dx: 0, dy: 50), duration: 0.5)
-      let addReloadSpriteAction = SKAction.run { self.addChild(self.reloadSprite) }
-      let waitAction = SKAction.wait(forDuration: 1)
-      let bulletFlashSequence = SKAction.repeatForever(SKAction.sequence([fadeOutAction, fadeInAction, waitAction]))
-      
-      var bulletActionCompletedCounter = 0
-      for bullet in bullets {
-        bullet.run(moveAction) {
-          bulletActionCompletedCounter += 1
-          
-          // All bullets moved higher
-          if bulletActionCompletedCounter == self.bullets.count {
-            if self.reloadSprite.parent == nil {
-              self.run(addReloadSpriteAction)
-            } else {
-              print("RELOAD SPRITE PRESENT: \(self.reloadSprite.parent)")
-              for bullet in self.bullets {
-                bullet.run(bulletFlashSequence)
-              }
-              self.reloadSprite.run(bulletFlashSequence)
-            }
-          }
+      // If that was the last bullet show animation for reloading
+      if fullBullets.isEmpty {
+        let bulletFlashSequence = SKAction.repeatForever(SKAction.sequence([
+          SKAction.fadeOut(withDuration: 0.5),
+          SKAction.fadeIn(withDuration: 0.5),
+          SKAction.wait(forDuration: 1)
+        ]))
+        
+        addChild(reloadSprite)
+        
+        for bullet in self.emptyBullets {
+          bullet.run(bulletFlashSequence)
         }
+        self.reloadSprite.run(bulletFlashSequence)
       }
-      
-      addChild(reloadSprite)
     }
+    
   }
   
-  func reloadBullets(touchesNodes: [SKNode]) {
-    if touchesNodes.contains(where: { $0.name?.contains("bullet") ?? false }) {
-      let bullet = bullets.first(where: {$0.name == "bullet-used"})
-      bullet?.texture = SKTexture(imageNamed: "bullet-full")
-      bullet?.name = "bullet-full"
+  func reloadBullets() {
+    guard !emptyBullets.isEmpty else { return }
+    
+    let bullet = emptyBullets.popLast()!
+    bullet.texture = SKTexture(imageNamed: "bullet-full")
+    bullet.name = "bullet-full"
+    fullBullets.append(bullet)
       
-      // Remove Reload Sprite
-      reloadSprite.removeAllActions()
-      reloadSprite.removeFromParent()
+    // Remove Reload Sprite
+    reloadSprite.removeAllActions()
+    reloadSprite.removeFromParent()
       
-      // Move bullets back to place
-      for bullet in bullets {
-        if bullet.hasActions() {
-          bullet.run(SKAction.move(by: CGVector(dx: 0, dy: -50), duration: 0.5)) {
-            // Remove blinking action
-            bullet.removeAllActions()
-          }
-        }
-      }
+    // Removes a blinking action and Resets bullets alpha value to 1
+    for bullet in fullBullets + emptyBullets {
+      bullet.removeAllActions()
+      bullet.alpha = 1
     }
   }
   
