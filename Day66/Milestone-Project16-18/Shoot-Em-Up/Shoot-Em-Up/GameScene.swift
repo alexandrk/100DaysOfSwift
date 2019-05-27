@@ -16,6 +16,7 @@ class GameScene: SKScene {
   private var emptyBullets = [SKSpriteNode]()
   private var reloadSprite: SKLabelNode!
   private var timerLabel: SKLabelNode!
+  private var isGameOver = false
   private let textFontAttributes: [NSAttributedString.Key: Any] = [
     NSAttributedString.Key.font: UIFont(name: "AmericanTypewriter-Bold", size: 48) ?? UIFont.systemFont(ofSize: 48),
     NSAttributedString.Key.foregroundColor: UIColor(red: 0.31, green: 0.29, blue: 0.33, alpha: 1.0),
@@ -70,6 +71,8 @@ class GameScene: SKScene {
       guard let self = self else { return }
       if self.timeLeft > 0 {
         self.timeLeft -= 1
+      } else {
+        self.gameOver()
       }
     }]))
     
@@ -88,6 +91,19 @@ class GameScene: SKScene {
     
     setupBullets()
     
+  }
+  
+  func gameOver() {
+    var textAttributes = textFontAttributes
+    textAttributes[NSAttributedString.Key.font] = UIFont(name: "AmericanTypewriter-Bold", size: 65) ?? UIFont.systemFont(ofSize: 65)
+    textAttributes[NSAttributedString.Key.foregroundColor] = UIColor(red: 1, green: 0, blue: 0, alpha: 1.0)
+    textAttributes[NSAttributedString.Key.strokeColor] = UIColor.black
+    
+    let gameOverNode = SKLabelNode(attributedText: NSAttributedString(string: "GAME OVER", attributes: textAttributes))
+    gameOverNode.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
+    addChild(gameOverNode)
+    
+    isGameOver = true
   }
   
   func setupBullets() {
@@ -149,6 +165,9 @@ class GameScene: SKScene {
   }
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+    
+    guard !isGameOver else { return }
+    
     let touch         = touches.first!
     let location      = touch.location(in: self)
     let touchesNodes  = nodes(at: location)
