@@ -16,6 +16,7 @@ class GameScene: SKScene {
   private var emptyBullets = [SKSpriteNode]()
   private var reloadSprite: SKLabelNode!
   private var timerLabel: SKLabelNode!
+  private var gameOverNode: SKLabelNode!
   private var isGameOver = false
   private let textFontAttributes: [NSAttributedString.Key: Any] = [
     NSAttributedString.Key.font: UIFont(name: "AmericanTypewriter-Bold", size: 48) ?? UIFont.systemFont(ofSize: 48),
@@ -73,6 +74,7 @@ class GameScene: SKScene {
         self.timeLeft -= 1
       } else {
         self.gameOver()
+        self.removeAction(forKey: "gameTimerAction")
       }
     }]))
     
@@ -83,7 +85,6 @@ class GameScene: SKScene {
         self.createEntity(atRow: .middle, scale: .medium, direction: .left)
         self.createEntity(atRow: .top, scale: .small, direction: .right)
       } else {
-        self.removeAction(forKey: "gameTimerAction")
         timer.invalidate()
       }
     }
@@ -94,14 +95,19 @@ class GameScene: SKScene {
   }
   
   func gameOver() {
+    
     var textAttributes = textFontAttributes
     textAttributes[NSAttributedString.Key.font] = UIFont(name: "AmericanTypewriter-Bold", size: 65) ?? UIFont.systemFont(ofSize: 65)
     textAttributes[NSAttributedString.Key.foregroundColor] = UIColor(red: 1, green: 0, blue: 0, alpha: 1.0)
     textAttributes[NSAttributedString.Key.strokeColor] = UIColor.black
     
-    let gameOverNode = SKLabelNode(attributedText: NSAttributedString(string: "GAME OVER", attributes: textAttributes))
+    gameOverNode = SKLabelNode(attributedText: NSAttributedString(string: "GAME OVER", attributes: textAttributes))
     gameOverNode.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
+    gameOverNode.xScale = 0.1
+    gameOverNode.yScale = 0.1
     addChild(gameOverNode)
+    
+    gameOverNode.run(SKAction.scale(to: 1, duration: 0.5))
     
     isGameOver = true
   }
