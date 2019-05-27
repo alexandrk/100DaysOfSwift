@@ -15,12 +15,18 @@ class GameScene: SKScene {
   private var fullBullets = [SKSpriteNode]()
   private var emptyBullets = [SKSpriteNode]()
   private var reloadSprite: SKLabelNode!
+  private var timerLabel: SKLabelNode!
   private let textFontAttributes: [NSAttributedString.Key: Any] = [
     NSAttributedString.Key.font: UIFont(name: "AmericanTypewriter-Bold", size: 48) ?? UIFont.systemFont(ofSize: 48),
     NSAttributedString.Key.foregroundColor: UIColor(red: 0.31, green: 0.29, blue: 0.33, alpha: 1.0),
     NSAttributedString.Key.strokeColor: UIColor.white,
     NSAttributedString.Key.strokeWidth: -2
   ]
+  private var timeLeft = 20 {
+    didSet {
+      timerLabel.attributedText = NSAttributedString(string: "Time Left: \(timeLeft)", attributes: textFontAttributes)
+    }
+  }
   private var counter = 0
   private var score = 0 {
     didSet {
@@ -46,6 +52,11 @@ class GameScene: SKScene {
 //    foreground.zPosition = 0
 //    addChild(foreground)
     
+    timerLabel = SKLabelNode(attributedText: NSAttributedString(string: "Time Left: \(timeLeft)", attributes: textFontAttributes))
+    timerLabel.position = CGPoint(x: frame.width - 350, y: frame.height - 70)
+    timerLabel.horizontalAlignmentMode = .left
+    addChild(timerLabel)
+    
     scoreLabel = SKLabelNode(attributedText: NSAttributedString(string: "Score: 0", attributes: textFontAttributes))
     scoreLabel.position = CGPoint(x: 8, y: 8)
     scoreLabel.horizontalAlignmentMode = .left
@@ -55,18 +66,25 @@ class GameScene: SKScene {
     reloadSprite.zPosition = 5
     reloadSprite.position = CGPoint(x: frame.width - 125, y: 100)
     
-    Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { (timer) in
-      if self.counter < 10 {
+    let gameTimerAction = SKAction.repeatForever(SKAction.sequence([SKAction.wait(forDuration: 1), SKAction.run { [weak self] in
+      guard let self = self else { return }
+      if self.timeLeft > 0 {
+        self.timeLeft -= 1
+      }
+    }]))
+    
+    Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { [weak self] (timer) in
+      guard let self = self else { return }
+      if self.timeLeft > 0 {
         self.createEntity(atRow: .bottom, scale: .large, direction: .right)
-      }
-      if self.counter < 10 {
         self.createEntity(atRow: .middle, scale: .medium, direction: .left)
-      }
-      if self.counter < 10 {
         self.createEntity(atRow: .top, scale: .small, direction: .right)
+      } else {
+        self.removeAction(forKey: "gameTimerAction")
+        timer.invalidate()
       }
-      self.counter += 1
     }
+    run(gameTimerAction, withKey: "gameTimerAction")
     
     setupBullets()
     
