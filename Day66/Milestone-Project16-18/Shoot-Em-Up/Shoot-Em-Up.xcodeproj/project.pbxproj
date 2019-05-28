@@ -33,6 +33,7 @@
 		3F7CD95B22A1D9CA00A942FF /* reload.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3F7CD95A22A1D9CA00A942FF /* reload.mp3 */; };
 		3F7CD95F22A1DC6B00A942FF /* shotFired.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3F7CD95E22A1DC6B00A942FF /* shotFired.mp3 */; };
 		3F7CD96122A1EE7100A942FF /* dryShot.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3F7CD96022A1EE7100A942FF /* dryShot.mp3 */; };
+		3F7CD96322A473DF00A942FF /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7CD96222A473DF00A942FF /* Settings.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +65,7 @@
 		3F7CD95A22A1D9CA00A942FF /* reload.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = reload.mp3; sourceTree = "<group>"; };
 		3F7CD95E22A1DC6B00A942FF /* shotFired.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shotFired.mp3; sourceTree = "<group>"; };
 		3F7CD96022A1EE7100A942FF /* dryShot.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = dryShot.mp3; sourceTree = "<group>"; };
+		3F7CD96222A473DF00A942FF /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 		3F3C27EF2299F57200A7A585 = {
 			isa = PBXGroup;
 			children = (
+				3F7CD96222A473DF00A942FF /* Settings.swift */,
 				3F3C27FA2299F57200A7A585 /* Shoot-Em-Up */,
 				3F3C27F92299F57200A7A585 /* Products */,
 			);
@@ -240,6 +243,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F7CD96322A473DF00A942FF /* Settings.swift in Sources */,
 				3F0E48E9229C6056003EBB4B /* CharacterType.swift in Sources */,
 				3F3C28022299F57200A7A585 /* GameScene.swift in Sources */,
 				3F3C2816229A1B0100A7A585 /* Entity.swift in Sources */,

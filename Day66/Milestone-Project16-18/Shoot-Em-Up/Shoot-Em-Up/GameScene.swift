@@ -14,28 +14,25 @@ class GameScene: SKScene {
   private var entities = [Entity]()
   private var fullBullets = [SKSpriteNode]()
   private var emptyBullets = [SKSpriteNode]()
+  
   private var reloadSprite: SKLabelNode!
   private var timerLabel: SKLabelNode!
-  private var gameOverNode: SKLabelNode!
-  private var isGameOver = false
-  private let textFontAttributes: [NSAttributedString.Key: Any] = [
-    NSAttributedString.Key.font: UIFont(name: "AmericanTypewriter-Bold", size: 48) ?? UIFont.systemFont(ofSize: 48),
-    NSAttributedString.Key.foregroundColor: UIColor(red: 0.31, green: 0.29, blue: 0.33, alpha: 1.0),
-    NSAttributedString.Key.strokeColor: UIColor.white,
-    NSAttributedString.Key.strokeWidth: -2
-  ]
-  private var timeLeft = 20 {
-    didSet {
-      timerLabel.attributedText = NSAttributedString(string: "Time Left: \(timeLeft)", attributes: textFontAttributes)
-    }
-  }
-  private var counter = 0
-  private var score = 0 {
-    didSet {
-      scoreLabel.attributedText = NSAttributedString(string: "Score: \(score)", attributes: textFontAttributes)
-    }
-  }
   private var scoreLabel: SKLabelNode!
+  private var gameOverNode: SKLabelNode!
+  private var playAgainNode: SKLabelNode!
+  private var gameTimerAction: SKAction!
+  private var isGameOver = false
+  
+  private var timeLeft = Settings.gameTimer {
+    didSet {
+      timerLabel.attributedText = NSAttributedString(string: "Time Left: \(timeLeft)", attributes: Settings.mainTextAttributes)
+    }
+  }
+  private var score = Settings.defaultScore {
+    didSet {
+      scoreLabel.attributedText = NSAttributedString(string: "Score: \(score)", attributes: Settings.mainTextAttributes)
+    }
+  }
   
   override func didMove(to view: SKView) {
 //    let background = SKSpriteNode(imageNamed: "BG_Decor")
@@ -54,22 +51,21 @@ class GameScene: SKScene {
 //    foreground.zPosition = 0
 //    addChild(foreground)
     
-    timerLabel = SKLabelNode(attributedText: NSAttributedString(string: "Time Left: \(timeLeft)", attributes: textFontAttributes))
+    timerLabel = SKLabelNode(attributedText: NSAttributedString(string: "Time Left: \(timeLeft)", attributes: Settings.mainTextAttributes))
     timerLabel.position = CGPoint(x: frame.width - 350, y: frame.height - 70)
     timerLabel.horizontalAlignmentMode = .left
     addChild(timerLabel)
     
-    scoreLabel = SKLabelNode(attributedText: NSAttributedString(string: "Score: 0", attributes: textFontAttributes))
+    scoreLabel = SKLabelNode(attributedText: NSAttributedString(string: "Score: 0", attributes: Settings.mainTextAttributes))
     scoreLabel.position = CGPoint(x: 8, y: 8)
     scoreLabel.horizontalAlignmentMode = .left
     addChild(scoreLabel)
 
-    reloadSprite = SKLabelNode(attributedText: NSAttributedString(string: "RELOAD!", attributes: textFontAttributes))
+    reloadSprite = SKLabelNode(attributedText: NSAttributedString(string: "RELOAD!", attributes: Settings.mainTextAttributes))
     reloadSprite.zPosition = 5
     reloadSprite.position = CGPoint(x: frame.width - 125, y: 100)
     
-    let gameTimerAction = SKAction.repeatForever(SKAction.sequence([SKAction.wait(forDuration: 1), SKAction.run { [weak self] in
-      guard let self = self else { return }
+    gameTimerAction = SKAction.repeatForever(SKAction.sequence([SKAction.wait(forDuration: 1), SKAction.run { [unowned self] in
       if self.timeLeft > 0 {
         self.timeLeft -= 1
       } else {
@@ -78,6 +74,13 @@ class GameScene: SKScene {
       }
     }]))
     
+    sendEntities()
+    
+    setupBullets()
+    
+  }
+  
+  func sendEntities() {
     Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { [weak self] (timer) in
       guard let self = self else { return }
       if self.timeLeft > 0 {
@@ -89,20 +92,12 @@ class GameScene: SKScene {
       }
     }
     run(gameTimerAction, withKey: "gameTimerAction")
-    
-    setupBullets()
-    
   }
   
   func gameOver() {
-    
-    var textAttributes = textFontAttributes
-    textAttributes[NSAttributedString.Key.font] = UIFont(name: "AmericanTypewriter-Bold", size: 65) ?? UIFont.systemFont(ofSize: 65)
-    textAttributes[NSAttributedString.Key.foregroundColor] = UIColor(red: 1, green: 0, blue: 0, alpha: 1.0)
-    textAttributes[NSAttributedString.Key.strokeColor] = UIColor.black
-    
-    gameOverNode = SKLabelNode(attributedText: NSAttributedString(string: "GAME OVER", attributes: textAttributes))
+    gameOverNode = SKLabelNode(attributedText: NSAttributedString(string: "GAME OVER", attributes: Settings.gameOverTextAttributes))
     gameOverNode.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
+    gameOverNode.zPosition = 5
     gameOverNode.xScale = 0.1
     gameOverNode.yScale = 0.1
     addChild(gameOverNode)
@@ -110,6 +105,14 @@ class GameScene: SKScene {
     gameOverNode.run(SKAction.scale(to: 1, duration: 0.5))
     
     isGameOver = true
+    
+    playAgainNode = SKLabelNode(attributedText: NSAttributedString(string: "Play Again?", attributes: Settings.playAgainTextAttributes))
+    playAgainNode.name = "play-again"
+    playAgainNode.position = CGPoint(x: frame.width / 2, y: frame.height / 2 - 70)
+    playAgainNode.zPosition = 5
+    
+    run(SKAction.sequence([SKAction.wait(forDuration: 0.5), SKAction.run { self.addChild(self.playAgainNode) }]))
+    
   }
   
   func setupBullets() {
@@ -172,11 +175,18 @@ class GameScene: SKScene {
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     
-    guard !isGameOver else { return }
-    
     let touch         = touches.first!
     let location      = touch.location(in: self)
     let touchesNodes  = nodes(at: location)
+    
+    // Check if Play Again was touched
+    
+    if touchesNodes.contains(where: { $0.name?.contains("play-again") ?? false }) {
+      restartGame()
+      return
+    }
+    
+    guard !isGameOver else { return }
     
     // Tries to reload bullets, if one of the  bullet is touched
     if touchesNodes.contains(where: { $0.name?.contains("bullet") ?? false }) {
@@ -210,6 +220,34 @@ class GameScene: SKScene {
     }
   }
   
+  func restartGame() {
+    
+    // Remove all entity nodes (if any are still present on scene)
+    for node in children {
+      if let node = node as? Entity {
+        node.removeFromParent()
+      }
+    }
+    // Set Timer to default value
+    timeLeft = Settings.gameTimer
+    // Reset Score
+    score = Settings.defaultScore
+    // Remove 'Game Over' and 'Play Again' nodes
+    gameOverNode.removeFromParent()
+    playAgainNode.removeFromParent()
+    // Reset bullets
+    for bullet in emptyBullets.reversed() {
+      bullet.texture = SKTexture(imageNamed: "bullet-full")
+      bullet.name = "bullet-full"
+      fullBullets.append(bullet)
+    }
+    emptyBullets.removeAll()
+    // Set isGameOver trigger to false
+    isGameOver = false
+    // Resend the entities
+    sendEntities()
+
+  }
   
   func subtractBullet() {
     
