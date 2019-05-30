@@ -21,6 +21,12 @@ class GameScene: SKScene {
   private var gameOverNode: SKLabelNode!
   private var playAgainNode: SKLabelNode!
   private var gameTimerAction: SKAction!
+  private var row1LastUpdateInterval: TimeInterval!
+  private var row2LastUpdateInterval: TimeInterval!
+  private var row3LastUpdateInterval: TimeInterval!
+  private var row1EntityInterval: TimeInterval!
+  private var row2EntityInterval: TimeInterval!
+  private var row3EntityInterval: TimeInterval!
   private var isGameOver = false
   
   private var timeLeft = Settings.gameTimer {
@@ -35,34 +41,36 @@ class GameScene: SKScene {
   }
   
   override func didMove(to view: SKView) {
-//    let background = SKSpriteNode(imageNamed: "BG_Decor")
-//    background.position = CGPoint(x: self.size.width / 2, y: self.size.height / 2)
-//    background.blendMode = .replace
-//    background.zPosition = -1
-//    addChild(background)
-//
-//    let ground = SKSpriteNode(imageNamed: "Ground")
-//    ground.position = CGPoint(x: self.size.width / 2, y: self.size.width / 2 - 50)
-//    ground.zPosition = 1
-//    addChild(ground)
-//
-//    let foreground = SKSpriteNode(imageNamed: "Foreground")
-//    foreground.position = CGPoint(x: self.size.width / 2, y: self.size.height / 2)
-//    foreground.zPosition = 0
-//    addChild(foreground)
+    let background = SKSpriteNode(imageNamed: "BG_Decor")
+    background.position = CGPoint(x: self.size.width / 2, y: self.size.height / 2)
+    background.blendMode = .replace
+    background.zPosition = -1
+    addChild(background)
+
+    let ground = SKSpriteNode(imageNamed: "Ground")
+    ground.position = CGPoint(x: self.size.width / 2, y: self.size.width / 2 - 50)
+    ground.zPosition = 6
+    addChild(ground)
+
+    let foreground = SKSpriteNode(imageNamed: "Foreground")
+    foreground.position = CGPoint(x: self.size.width / 2, y: self.size.height / 2)
+    foreground.zPosition = 5
+    addChild(foreground)
     
     timerLabel = SKLabelNode(attributedText: NSAttributedString(string: "Time Left: \(timeLeft)", attributes: Settings.mainTextAttributes))
     timerLabel.position = CGPoint(x: frame.width - 350, y: frame.height - 70)
     timerLabel.horizontalAlignmentMode = .left
+    timerLabel.zPosition = 20
     addChild(timerLabel)
     
     scoreLabel = SKLabelNode(attributedText: NSAttributedString(string: "Score: 0", attributes: Settings.mainTextAttributes))
-    scoreLabel.position = CGPoint(x: 8, y: 8)
+    scoreLabel.position = CGPoint(x: 8, y: frame.height - 70)
     scoreLabel.horizontalAlignmentMode = .left
+    scoreLabel.zPosition = 20
     addChild(scoreLabel)
 
     reloadSprite = SKLabelNode(attributedText: NSAttributedString(string: "RELOAD!", attributes: Settings.mainTextAttributes))
-    reloadSprite.zPosition = 5
+    reloadSprite.zPosition = 20
     reloadSprite.position = CGPoint(x: frame.width - 125, y: 100)
     
     gameTimerAction = SKAction.repeatForever(SKAction.sequence([SKAction.wait(forDuration: 1), SKAction.run { [unowned self] in
@@ -74,30 +82,40 @@ class GameScene: SKScene {
       }
     }]))
     
-    sendEntities()
+    row1EntityInterval = Settings.randomTimeInterval
+    row2EntityInterval = Settings.randomTimeInterval
+    row3EntityInterval = Settings.randomTimeInterval
     
     setupBullets()
     
+    run(gameTimerAction, withKey: "gameTimerAction")
+    
   }
   
-  func sendEntities() {
-    Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { [weak self] (timer) in
-      guard let self = self else { return }
-      if self.timeLeft > 0 {
-        self.createEntity(atRow: .bottom, scale: .large, direction: .right)
-        self.createEntity(atRow: .middle, scale: .medium, direction: .left)
-        self.createEntity(atRow: .top, scale: .small, direction: .right)
-      } else {
-        timer.invalidate()
-      }
+  func sendEntities(currentTime: TimeInterval) {
+    
+    if currentTime - row1LastUpdateInterval > row1EntityInterval {
+      createEntity(atRow: .bottom, scale: .large, direction: .right)
+      row1LastUpdateInterval = currentTime
+      row1EntityInterval = Settings.randomTimeInterval
     }
-    run(gameTimerAction, withKey: "gameTimerAction")
+    if currentTime - row2LastUpdateInterval > row2EntityInterval {
+      createEntity(atRow: .middle, scale: .medium, direction: .left)
+      row2LastUpdateInterval = currentTime
+      row2EntityInterval = Settings.randomTimeInterval
+    }
+    if currentTime - row3LastUpdateInterval > row3EntityInterval {
+      createEntity(atRow: .top, scale: .small, direction: .right)
+      row3LastUpdateInterval = currentTime
+      row3EntityInterval = Settings.randomTimeInterval
+    }
+  
   }
   
   func gameOver() {
     gameOverNode = SKLabelNode(attributedText: NSAttributedString(string: "GAME OVER", attributes: Settings.gameOverTextAttributes))
     gameOverNode.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
-    gameOverNode.zPosition = 5
+    gameOverNode.zPosition = 20
     gameOverNode.xScale = 0.1
     gameOverNode.yScale = 0.1
     addChild(gameOverNode)
@@ -109,7 +127,7 @@ class GameScene: SKScene {
     playAgainNode = SKLabelNode(attributedText: NSAttributedString(string: "Play Again?", attributes: Settings.playAgainTextAttributes))
     playAgainNode.name = "play-again"
     playAgainNode.position = CGPoint(x: frame.width / 2, y: frame.height / 2 - 70)
-    playAgainNode.zPosition = 5
+    playAgainNode.zPosition = 20
     
     run(SKAction.sequence([SKAction.wait(forDuration: 0.5), SKAction.run { self.addChild(self.playAgainNode) }]))
     
@@ -127,7 +145,7 @@ class GameScene: SKScene {
       bullet.name = "bullet-full"
       bullet.position = bulletPosition
       bullet.anchorPoint = CGPoint(x: 0, y: 0)
-      bullet.zPosition = 3
+      bullet.zPosition = 20
       bullet.xScale = 0.35
       bullet.yScale = 0.35
       
@@ -142,7 +160,13 @@ class GameScene: SKScene {
   
   func createEntity(atRow: YOffset, scale: EntitySize, direction: Direction) {
     let entity = Entity(screenSize: self.frame)
-    entity.zPosition = 0
+    
+    switch atRow {
+      case .bottom: entity.zPosition = 6
+      case .middle: entity.zPosition = 1
+      case .top: entity.zPosition = 2
+    }
+    
     entity.configure(atRow: atRow, scale: scale, direction: direction)
     addChild(entity)
     entity.animate()
@@ -152,6 +176,16 @@ class GameScene: SKScene {
   
   // Called before each frame is rendered
   override func update(_ currentTime: TimeInterval) {
+  
+    guard !isGameOver else { return }
+    
+    if row1LastUpdateInterval == nil || row2LastUpdateInterval == nil || row3LastUpdateInterval == nil {
+      row1LastUpdateInterval = currentTime
+      row2LastUpdateInterval = currentTime
+      row3LastUpdateInterval = currentTime
+    }
+    sendEntities(currentTime: currentTime)
+    
     for node in children {
       // Subtraсts points if the "Bad / Enemy" entity reaches the other side alive
       if let entity = node as? Entity {
@@ -244,8 +278,8 @@ class GameScene: SKScene {
     emptyBullets.removeAll()
     // Set isGameOver trigger to false
     isGameOver = false
-    // Resend the entities
-    sendEntities()
+    // Restart Game Timer
+    run(gameTimerAction, withKey: "gameTimerAction")
 
   }
   

@@ -21,9 +21,9 @@ enum Direction: CGFloat {
 }
 
 enum YOffset: CGFloat {
-  case top = 0.8
-  case middle = 0.35
-  case bottom = 0.05
+  case top = 0.45
+  case middle = 0.2
+  case bottom = 0.02
 }
 
 class Entity: SKNode {

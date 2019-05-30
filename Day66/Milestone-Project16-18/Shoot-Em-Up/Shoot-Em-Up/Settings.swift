@@ -48,4 +48,6 @@ struct Settings {
     NSAttributedString.Key.strokeWidth      : Settings.mainTextStrokeWidth
   ]
   
+  static var randomTimeInterval: TimeInterval { return [2.5, 3, 3.5, 4, 4.5, 5].randomElement()! }
+  
 }
