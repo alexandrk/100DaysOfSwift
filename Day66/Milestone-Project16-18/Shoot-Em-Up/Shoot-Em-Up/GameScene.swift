@@ -27,6 +27,12 @@ class GameScene: SKScene {
   private var row1EntityInterval: TimeInterval!
   private var row2EntityInterval: TimeInterval!
   private var row3EntityInterval: TimeInterval!
+  private struct bulletsFrame {
+    static var minX: CGFloat!
+    static var maxX: CGFloat!
+    static var minY: CGFloat!
+    static var maxY: CGFloat!
+  }
   private var isGameOver = false
   
   private var timeLeft = Settings.gameTimer {
@@ -136,7 +142,7 @@ class GameScene: SKScene {
   func setupBullets() {
     
     var xPosition: CGFloat = size.width - 50
-    let yPosition:CGFloat = 8
+    let yPosition: CGFloat = 8
     var bulletPosition: CGPoint!
     
     for _ in 1...6 {
@@ -153,6 +159,16 @@ class GameScene: SKScene {
       fullBullets.append(bullet)
       
       xPosition -= 36
+      
+      if bulletsFrame.minX == nil { bulletsFrame.minX = bullet.frame.minX }
+      if bulletsFrame.maxX == nil { bulletsFrame.maxX = bullet.frame.maxX }
+      if bulletsFrame.minY == nil { bulletsFrame.minY = bullet.frame.minY }
+      if bulletsFrame.maxY == nil { bulletsFrame.maxY = bullet.frame.maxY }
+      
+      bulletsFrame.minX = min(bulletsFrame.minX, bullet.frame.minX)
+      bulletsFrame.maxX = max(bulletsFrame.maxX, bullet.frame.maxX)
+      bulletsFrame.minY = min(bulletsFrame.minY, bullet.frame.minY)
+      bulletsFrame.maxY = min(bulletsFrame.maxY, bullet.frame.maxY)
     }
     fullBullets.reverse()
     
@@ -223,8 +239,10 @@ class GameScene: SKScene {
     guard !isGameOver else { return }
     
     // Tries to reload bullets, if one of the  bullet is touched
-    if touchesNodes.contains(where: { $0.name?.contains("bullet") ?? false }) {
+    if location.x >= bulletsFrame.minX && location.x <= bulletsFrame.maxX &&
+       location.y >= bulletsFrame.minY && location.y <= bulletsFrame.maxY {
       reloadBullets()
+      return
     }
     // Else uses one of the bullets
     else {
