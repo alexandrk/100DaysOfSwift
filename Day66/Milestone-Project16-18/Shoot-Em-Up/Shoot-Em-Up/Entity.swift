@@ -57,7 +57,8 @@ class Entity: SKNode {
     sprite.name = configureName(enemySize: scale)
     
     var xPosition: CGFloat!
-    xPosition = (direction == .right) ? -100 : screenSize.width + 100
+    let spriteScaledWidth = sprite.frame.width * scale.rawValue
+    xPosition = (direction == .right) ? -(spriteScaledWidth) : screenSize.width + spriteScaledWidth
     self.position = CGPoint(x: xPosition, y: screenSize.height * yOffset.rawValue)
     
     addChild(sprite)

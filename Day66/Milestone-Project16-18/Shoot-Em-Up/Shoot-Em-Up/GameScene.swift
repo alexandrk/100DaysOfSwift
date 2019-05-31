@@ -187,6 +187,7 @@ class GameScene: SKScene {
     addChild(entity)
     entity.animate()
     entity.move()
+    
     entities.append(entity)
   }
   
@@ -263,7 +264,12 @@ class GameScene: SKScene {
         let sound = SKAction.playSoundFileNamed("bodyFallDirt.mp3", waitForCompletion: false)
         run(sound)
         score += 5
-        node.removeFromParent()
+        
+        // Need to remove the entity, which is a parent node of the touched SKSpriteNode
+        if let entity = node.parent as? Entity {
+          entity.removeAllActions()
+          entity.removeFromParent()
+        }
       } else if node.name!.contains("good") {
         let sound = SKAction.playSoundFileNamed("missedShot.mp3", waitForCompletion: false)
         run(sound)
@@ -273,6 +279,9 @@ class GameScene: SKScene {
   }
   
   func restartGame() {
+    
+    // Clear out entities array
+    entities.removeAll()
     
     // Remove all entity nodes (if any are still present on scene)
     for node in children {
