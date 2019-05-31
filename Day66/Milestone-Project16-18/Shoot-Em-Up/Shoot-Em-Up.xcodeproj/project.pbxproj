@@ -34,6 +34,7 @@
 		3F7CD95F22A1DC6B00A942FF /* shotFired.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3F7CD95E22A1DC6B00A942FF /* shotFired.mp3 */; };
 		3F7CD96122A1EE7100A942FF /* dryShot.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3F7CD96022A1EE7100A942FF /* dryShot.mp3 */; };
 		3F7CD96322A473DF00A942FF /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F7CD96222A473DF00A942FF /* Settings.swift */; };
+		3F7CD96522A4E8D000A942FF /* reload-short.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3F7CD96422A4E8D000A942FF /* reload-short.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +67,7 @@
 		3F7CD95E22A1DC6B00A942FF /* shotFired.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shotFired.mp3; sourceTree = "<group>"; };
 		3F7CD96022A1EE7100A942FF /* dryShot.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = dryShot.mp3; sourceTree = "<group>"; };
 		3F7CD96222A473DF00A942FF /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		3F7CD96422A4E8D000A942FF /* reload-short.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "reload-short.mp3"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,12 +130,12 @@
 				3F3C27FD2299F57200A7A585 /* GameScene.sks */,
 				3F3C28012299F57200A7A585 /* GameScene.swift */,
 				3F3C2815229A1B0100A7A585 /* Entity.swift */,
+				3F0E48E8229C6056003EBB4B /* CharacterType.swift */,
 				3F3C28032299F57200A7A585 /* GameViewController.swift */,
 				3F3C28052299F57200A7A585 /* Main.storyboard */,
 				3F3C28082299F57200A7A585 /* Assets.xcassets */,
 				3F0E48CD229C51EA003EBB4B /* Good */,
 				3F0E48CC229C51C9003EBB4B /* Bad */,
-				3F0E48E8229C6056003EBB4B /* CharacterType.swift */,
 				3F7CD96222A473DF00A942FF /* Settings.swift */,
 				3F7CD95C22A1D9D600A942FF /* Sounds */,
 				3F3C280A2299F57200A7A585 /* LaunchScreen.storyboard */,
@@ -148,6 +150,7 @@
 				3F0E48C4229B71B0003EBB4B /* bodyFallDirt.mp3 */,
 				3F7CD958229F126200A942FF /* missedShot.mp3 */,
 				3F7CD95A22A1D9CA00A942FF /* reload.mp3 */,
+				3F7CD96422A4E8D000A942FF /* reload-short.mp3 */,
 				3F7CD95E22A1DC6B00A942FF /* shotFired.mp3 */,
 				3F7CD96022A1EE7100A942FF /* dryShot.mp3 */,
 			);
@@ -228,6 +231,7 @@
 				3F0E48F5229C66FD003EBB4B /* FantasyTroll_3_Walking.atlas in Resources */,
 				3F7CD95B22A1D9CA00A942FF /* reload.mp3 in Resources */,
 				3F0E48C5229B71B0003EBB4B /* bodyFallDirt.mp3 in Resources */,
+				3F7CD96522A4E8D000A942FF /* reload-short.mp3 in Resources */,
 				3F0E48F3229C66FD003EBB4B /* FallenAngel_3_Walking.atlas in Resources */,
 				3F0E48F4229C66FD003EBB4B /* FantasyTroll_1_Walking.atlas in Resources */,
 				3F0E4900229C670D003EBB4B /* FantasyFairy_2_Walking.atlas in Resources */,

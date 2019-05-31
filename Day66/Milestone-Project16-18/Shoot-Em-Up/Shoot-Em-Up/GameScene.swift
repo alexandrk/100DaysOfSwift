@@ -319,6 +319,7 @@ class GameScene: SKScene {
     bullet.texture = SKTexture(imageNamed: "bullet-full")
     bullet.name = "bullet-full"
     fullBullets.append(bullet)
+    run(SKAction.playSoundFileNamed("reload-short", waitForCompletion: false))
       
     // Remove Reload Sprite
     reloadSprite.removeAllActions()
