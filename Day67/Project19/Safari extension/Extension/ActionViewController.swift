@@ -20,6 +20,8 @@ class ActionViewController: UIViewController {
   
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
   
+    navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Actions", style: .plain, target: self, action: #selector(showPredefinedScripts))
+    
     let notificationCenter = NotificationCenter.default
     notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
     notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
@@ -44,6 +46,30 @@ class ActionViewController: UIViewController {
       
   }
 
+  @objc func showPredefinedScripts() {
+    
+    let scripts = UserDefaults.standard.dictionary(forKey: "default")
+    
+    let ac = UIAlertController(title: "Default Scripts", message: nil, preferredStyle: .actionSheet)
+    
+    if let scripts = scripts as? [String: String] {
+      for scriptName in scripts.keys {
+        guard let defaultScript = scripts[scriptName] else { continue }
+        
+        ac.addAction(UIAlertAction(title: scriptName, style: .default) { [weak self] (_) in self?.updateTextView(with: defaultScript) })
+      }
+    } else {
+      populateDefaultScripts()
+      showPredefinedScripts()
+    }
+    
+    present(ac, animated: true)
+  }
+  
+  func updateTextView(with script: String) {
+    self.script.text = script
+  }
+  
   @objc func adjustForKeyboard(notifcation: Notification) {
     guard let keyboardValue = notifcation.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
     
@@ -74,6 +100,12 @@ class ActionViewController: UIViewController {
     let customJavascript = NSItemProvider(item: webDictionary, typeIdentifier: kUTTypePropertyList as String)
     item.attachments = [customJavascript]
     extensionContext?.completeRequest(returningItems: [item])
+  }
+  
+  // Populates UserDefaults with default scripts available for all pages.
+  func populateDefaultScripts() {
+    let defaultScripts = ["Simple Alert": "alert('Hello World');", "Show Web Page Title": "alert(document.title);"]
+    UserDefaults.standard.set(defaultScripts, forKey: "default")
   }
 
 }
