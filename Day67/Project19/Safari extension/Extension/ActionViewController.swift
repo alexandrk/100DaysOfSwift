@@ -11,63 +11,29 @@ import MobileCoreServices
 
 class ActionViewController: UIViewController {
 
-  @IBOutlet weak var script: UITextView!
-  var pageTitle = ""
-  var pageURL = ""
+  @IBOutlet weak var scriptField: UITextView!
+  var script: Script?
+  var hostName: String?
   
   override func viewDidLoad() {
     super.viewDidLoad()
   
-    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(done))
-  
-    navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Actions", style: .plain, target: self, action: #selector(showPredefinedScripts))
+    title = script?.name ?? "New Script"
+    
+    navigationItem.rightBarButtonItems = [
+      UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveScript)),
+      UIBarButtonItem(title: "Run", style: .done, target: self, action: #selector(runScript))
+    ]
     
     let notificationCenter = NotificationCenter.default
-    notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillHideNotification, object: nil)
-    notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard),
+                                   name: UIResponder.keyboardWillHideNotification, object: nil)
+    notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard),
+                                   name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     
-    // Parse the parameters that were passed from the webpage through the extension to the here
-    if let inputItem = extensionContext?.inputItems.first as? NSExtensionItem {
-      if let itemProvider = inputItem.attachments?.first {
-        itemProvider.loadItem(forTypeIdentifier: kUTTypePropertyList as String) { [weak self] (dict, error) in
-          
-          guard let itemDictionary = dict as? NSDictionary else { return }
-          guard let javascriptValues = itemDictionary[NSExtensionJavaScriptPreprocessingResultsKey] as? NSDictionary else { return }
-          
-          self?.pageTitle = javascriptValues["title"] as? String ?? ""
-          self?.pageURL = javascriptValues["URL"] as? String ?? ""
-          
-          DispatchQueue.main.async {
-            self?.title = self?.pageTitle
-          }
-        }
-      }
+    if let script = script {
+      scriptField.text = script.text
     }
-      
-  }
-
-  @objc func showPredefinedScripts() {
-    
-    let scripts = UserDefaults.standard.dictionary(forKey: "default")
-    
-    let ac = UIAlertController(title: "Default Scripts", message: nil, preferredStyle: .actionSheet)
-    
-    if let scripts = scripts as? [String: String] {
-      for scriptName in scripts.keys {
-        guard let defaultScript = scripts[scriptName] else { continue }
-        
-        ac.addAction(UIAlertAction(title: scriptName, style: .default) { [weak self] (_) in self?.updateTextView(with: defaultScript) })
-      }
-    } else {
-      populateDefaultScripts()
-      showPredefinedScripts()
-    }
-    
-    present(ac, animated: true)
-  }
-  
-  func updateTextView(with script: String) {
-    self.script.text = script
   }
   
   @objc func adjustForKeyboard(notifcation: Notification) {
@@ -79,33 +45,52 @@ class ActionViewController: UIViewController {
     let keyboardViewEndFrame = view.convert(keyboardScreenEndFrame, from: view.window)
     
     if notifcation.name == UIResponder.keyboardWillHideNotification {
-      script.contentInset = .zero
+      scriptField.contentInset = .zero
     } else {
-      script.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 0)
+      scriptField.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardViewEndFrame.height - view.safeAreaInsets.bottom, right: 0)
     }
     
     // Adjusts the scroll indicator bottom edge properly for when the keyboard is showed (coving the UITextView)
-    script.scrollIndicatorInsets = script.contentInset
+    scriptField.scrollIndicatorInsets = scriptField.contentInset
     
-    let selectedRange = script.selectedRange
-    script.scrollRangeToVisible(selectedRange)
+    let selectedRange = scriptField.selectedRange
+    scriptField.scrollRangeToVisible(selectedRange)
   }
   
-  /// Event Handler for the navigation bar button item
-  @IBAction func done() {
+  /// Event Handler for the navigation bar button items
+  
+  @IBAction func saveScript() {
+    let ac = UIAlertController(title: "Please Enter Script Name", message: nil, preferredStyle: .alert)
+    ac.addTextField()
+    ac.addAction(UIAlertAction(title: "Save", style: .default, handler: { [weak ac, weak self] (_) in
+      guard let ac = ac,
+        let self = self,
+        let scriptName = ac.textFields?[0].text,
+        let hostName = self.hostName else { return
+      }
+      // 1. Get saved scripts array
+      var savedScripts = DataManager.retreive(for: hostName)
+      // 2. Append to it the newly saved script
+      savedScripts.append(Script(hostName: hostName, name: scriptName, text: self.scriptField.text))
+      // 3. Save new array to UserDefaults
+      DataManager.save(data: savedScripts, key: hostName)
+      
+      // 4. Go back to tableView
+      self.navigationController?.popViewController(animated: true)
+    }))
+    present(ac, animated: true)
+  }
+  
+  @IBAction func runScript() {
     // Create the return parameters to be sent back to Safari's page through the extension
     let item = NSExtensionItem()
-    let argument: NSDictionary = ["customJavascript": script.text ?? ""]
+    let argument: NSDictionary = ["customJavascript": script?.text ?? ""]
     let webDictionary: NSDictionary = [NSExtensionJavaScriptFinalizeArgumentKey: argument]
     let customJavascript = NSItemProvider(item: webDictionary, typeIdentifier: kUTTypePropertyList as String)
     item.attachments = [customJavascript]
     extensionContext?.completeRequest(returningItems: [item])
-  }
-  
-  // Populates UserDefaults with default scripts available for all pages.
-  func populateDefaultScripts() {
-    let defaultScripts = ["Simple Alert": "alert('Hello World');", "Show Web Page Title": "alert(document.title);"]
-    UserDefaults.standard.set(defaultScripts, forKey: "default")
+    
+    navigationController?.popViewController(animated: true)
   }
 
 }
