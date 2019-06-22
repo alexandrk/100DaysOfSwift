@@ -13,9 +13,15 @@ class GameScene: SKScene {
   var gameTimer: Timer?
   var fireworks = [SKNode]()
   
+  let finiteNumberOfLaunches = 3
+  var launchesTotal = 0
   let leftEdge = -22
   let bottomEdge = -22
   let rightEdge = 1024 + 22
+  
+  var gameOverLabel: SKLabelNode!
+  var restartLabel: SKLabelNode!
+  var isGameOver = false
   
   var scoreLabel: SKLabelNode!
   var score = 0 {
@@ -81,6 +87,8 @@ class GameScene: SKScene {
   
   @objc func launchFireworks() {
     let movementAmount: CGFloat = 1800
+    launchesTotal += 1
+    
     switch Int.random(in: 0...3) {
     case 0:
       //fire five, straight up
@@ -118,6 +126,10 @@ class GameScene: SKScene {
   func checkTouches(_ touches: Set<UITouch>) {
     guard let touch = touches.first else { return }
     
+    if isGameOver {
+      restartGame()
+    }
+    
     let location = touch.location(in: self)
     let nodesAtPoint = nodes(at: location)
     
@@ -149,6 +161,11 @@ class GameScene: SKScene {
   }
   
   override func update(_ currentTime: TimeInterval) {
+    
+    if launchesTotal > finiteNumberOfLaunches && !isGameOver {
+      gameOver()
+    }
+    
     for (index, firework) in fireworks.enumerated().reversed() {
       if firework.position.y > 900 {
         fireworks.remove(at: index)
@@ -187,6 +204,39 @@ class GameScene: SKScene {
       }
       
     }
+  }
+  
+  func gameOver() {
+    // Check if GameOver logic is already initiated.
+    guard !isGameOver else { return }
+    
+    gameTimer?.invalidate()
+    
+    gameOverLabel = SKLabelNode(fontNamed: "Chalkduster")
+    gameOverLabel.fontColor = .red
+    gameOverLabel.text = "GAME OVER"
+    gameOverLabel.fontSize = 50
+    gameOverLabel.zPosition = 10
+    gameOverLabel.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
+    addChild(gameOverLabel)
+    
+    restartLabel = SKLabelNode(fontNamed: "Chalkduster")
+    restartLabel.text = "tap anywhere to restart"
+    restartLabel.fontSize = 40
+    restartLabel.zPosition = 10
+    restartLabel.position = CGPoint(x: frame.width / 2, y: frame.height / 2 - 80)
+    addChild(restartLabel)
+    
+    isGameOver = true
+  }
+  
+  func restartGame() {
+    isGameOver = false
+    launchesTotal = 0
+    gameOverLabel.removeFromParent()
+    restartLabel.removeFromParent()
+    score = 0
+    gameTimer = Timer.scheduledTimer(timeInterval: 6, target: self, selector: #selector(launchFireworks), userInfo: nil, repeats: true)
   }
   
 }
