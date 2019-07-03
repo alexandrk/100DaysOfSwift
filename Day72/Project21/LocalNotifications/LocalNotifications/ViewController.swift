@@ -66,6 +66,8 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
   func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
     // pull out the buried userInfo dictionary
     let userInfo = response.notification.request.content.userInfo
+    let alertTitle = "TYPE OF ALERT USER ACTION"
+    var alertMessage = ""
     
     if let customData = userInfo["customData"] as? String {
       print("Custom data received: \(customData)")
@@ -73,15 +75,20 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
       switch response.actionIdentifier {
       case UNNotificationDefaultActionIdentifier:
         // the user swiped to unlock
-        print("Default identifier")
+        alertMessage = "Default identifier"
       
       case "show":
-        print("Show more information...")
+        alertMessage = "Show more information..."
       
       default:
         break
       }
     }
+    
+    let ac = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+    ac.addAction(UIAlertAction(title: "OK", style: .cancel))
+    present(ac, animated: true)
+    
     // you must call the completion handler when you're done
     completionHandler()
   }
