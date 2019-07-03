@@ -58,7 +58,8 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
     center.delegate = self
     
     let show = UNNotificationAction(identifier: "show", title: "Tell me more...", options: .foreground)
-    let category = UNNotificationCategory(identifier: "alarm", actions: [show], intentIdentifiers: [])
+    let postpond = UNNotificationAction(identifier: "reschedule", title: "Remind me in 24 hours", options: .destructive)
+    let category = UNNotificationCategory(identifier: "alarm", actions: [show, postpond], intentIdentifiers: [])
     
     center.setNotificationCategories([category])
   }
@@ -76,18 +77,25 @@ class ViewController: UIViewController, UNUserNotificationCenterDelegate {
       case UNNotificationDefaultActionIdentifier:
         // the user swiped to unlock
         alertMessage = "Default identifier"
-      
+        
       case "show":
         alertMessage = "Show more information..."
+        
+      case "reschedule":
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1*60*60*24, repeats: false)
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: response.notification.request.content, trigger: trigger)
+        center.add(request)
       
       default:
         break
       }
     }
     
-    let ac = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
-    ac.addAction(UIAlertAction(title: "OK", style: .cancel))
-    present(ac, animated: true)
+    if response.actionIdentifier != "reschedule" {
+      let ac = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
+      ac.addAction(UIAlertAction(title: "OK", style: .cancel))
+      present(ac, animated: true)
+    }
     
     // you must call the completion handler when you're done
     completionHandler()
