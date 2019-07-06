@@ -12,7 +12,11 @@ class ViewController: UITableViewController {
 
   private let tableCellID = "noteCell"
   private let filename = "notes.json"
-  private var notes = [Note]()
+  private var notes = [Note]() {
+    didSet {
+      countWithActivityIndicator.title = "\(notes.count) Notes"
+    }
+  }
   private var countWithActivityIndicator = UIBarButtonItem(title: nil, style: .plain, target: nil, action: nil)
   
   //MARK: - View Lifecycle Methods
@@ -98,7 +102,7 @@ class ViewController: UITableViewController {
   
   @objc func deleteNotes() {
     if let selectedIndexPaths = tableView.indexPathsForSelectedRows {
-      for indexPath in selectedIndexPaths {
+      for indexPath in selectedIndexPaths.reversed() {
         notes.remove(at: indexPath.row)
       }
       tableView.deleteRows(at: selectedIndexPaths, with: .left)
