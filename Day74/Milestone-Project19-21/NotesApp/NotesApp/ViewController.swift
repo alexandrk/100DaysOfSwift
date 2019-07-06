@@ -20,18 +20,23 @@ class ViewController: UITableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    tableView.allowsMultipleSelectionDuringEditing = true
+    
     loadNotes()
     
     // Navigation Items
     title = "Notes"
-    navigationController?.navigationBar.prefersLargeTitles = true
-    navigationController?.navigationBar.tintColor = UIColor(red:0.82, green:0.69, blue:0.17, alpha:1.0)
+    navigationController?.navigationBar.tintColor = UIColor(red: 0.82, green: 0.69, blue: 0.17, alpha:1.0)
     navigationController?.toolbar.tintColor = navigationController?.navigationBar.tintColor
     navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editTableItems))
     
     // Toolbar Items
     navigationController?.isToolbarHidden = false
     countWithActivityIndicator = UIBarButtonItem(title: "\(notes.count) Notes", style: .plain, target: nil, action: nil)
+    countWithActivityIndicator.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)], for: .normal)
+    countWithActivityIndicator.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12)], for: .disabled)
+    countWithActivityIndicator.tintColor = .black
+    countWithActivityIndicator.isEnabled = false
     
     setToolbarItems([
       UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
@@ -43,6 +48,7 @@ class ViewController: UITableViewController {
   }
   
   override func viewWillAppear(_ animated: Bool) {
+    navigationController?.navigationBar.prefersLargeTitles = true
     loadNotes()
     countWithActivityIndicator.title = "\(notes.count) Notes"
     tableView.reloadData()
@@ -63,12 +69,43 @@ class ViewController: UITableViewController {
   //MARK: - Actions
   
   @objc func editTableItems() {
+    tableView.setEditing(!tableView.isEditing, animated: true)
     
+    var currentToolbarItems = toolbarItems!
+    
+    if tableView.isEditing {
+      // Change Navigation Bar Button
+      navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(editTableItems))
+      
+      // Change Toolbar Button
+      let deleteButton = UIBarButtonItem(title: "Delete", style: .done, target: self, action: #selector(deleteNotes))
+      deleteButton.tintColor = .red
+      
+      currentToolbarItems[currentToolbarItems.endIndex - 1] = deleteButton
+      setToolbarItems(currentToolbarItems, animated: true)
+    } else {
+      navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editTableItems))
+      
+      // Change Toolbar Button
+      currentToolbarItems[currentToolbarItems.endIndex - 1] = UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(createNewNote))
+      setToolbarItems(currentToolbarItems, animated: true)
+    }
   }
 
   @objc func createNewNote() {
     if let vc = storyboard?.instantiateViewController(withIdentifier: "NoteDetails") {
       navigationController?.pushViewController(vc, animated: true)
+    }
+  }
+  
+  @objc func deleteNotes() {
+    if let selectedIndexPaths = tableView.indexPathsForSelectedRows {
+      for indexPath in selectedIndexPaths {
+        notes.remove(at: indexPath.row)
+      }
+      tableView.deleteRows(at: selectedIndexPaths, with: .left)
+      Storage.store(notes, to: .documents, as: filename)
+      editTableItems()
     }
   }
   
@@ -79,9 +116,12 @@ class ViewController: UITableViewController {
   }
   
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    if let noteDetailVC = storyboard?.instantiateViewController(withIdentifier: "NoteDetails") as? NoteViewController {
-      noteDetailVC.note = notes[indexPath.row]
-      navigationController?.pushViewController(noteDetailVC, animated: true)
+    
+    if !tableView.isEditing {
+      if let noteDetailVC = storyboard?.instantiateViewController(withIdentifier: "NoteDetails") as? NoteViewController {
+        noteDetailVC.note = notes[indexPath.row]
+        navigationController?.pushViewController(noteDetailVC, animated: true)
+      }
     }
   }
   
