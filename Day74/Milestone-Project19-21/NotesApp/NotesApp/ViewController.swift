@@ -22,8 +22,6 @@ class ViewController: UITableViewController {
     
     tableView.allowsMultipleSelectionDuringEditing = true
     
-    loadNotes()
-    
     // Navigation Items
     title = "Notes"
     navigationController?.navigationBar.tintColor = UIColor(red: 0.82, green: 0.69, blue: 0.17, alpha:1.0)
@@ -78,7 +76,7 @@ class ViewController: UITableViewController {
       navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(editTableItems))
       
       // Change Toolbar Button
-      let deleteButton = UIBarButtonItem(title: "Delete", style: .done, target: self, action: #selector(deleteNotes))
+      let deleteButton = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNotes))
       deleteButton.tintColor = .red
       
       currentToolbarItems[currentToolbarItems.endIndex - 1] = deleteButton
@@ -128,6 +126,7 @@ class ViewController: UITableViewController {
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: tableCellID)
     cell?.textLabel?.text = notes[indexPath.row].content
+    cell?.detailTextLabel?.text = notes[indexPath.row].id
     return cell ?? UITableViewCell()
   }
   
