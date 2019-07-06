@@ -15,6 +15,7 @@ class NoteViewController: UIViewController {
   var note: Note?
   var existingNoteID: String?
   var notes = [Note]()
+  var deleting = false
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -37,8 +38,10 @@ class NoteViewController: UIViewController {
     
     // Toolbar Items
     navigationController?.isToolbarHidden = false
+    let trashIcon = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNoteAction))
+    trashIcon.tintColor = .red
     setToolbarItems([
-      UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNoteAction)),
+      trashIcon,
       UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
       UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(createNewNoteAction))
       ], animated: true)
@@ -49,7 +52,7 @@ class NoteViewController: UIViewController {
   }
 
   override func viewWillDisappear(_ animated: Bool) {
-    saveNote()
+    if !deleting { saveNote() }
   }
   
   @objc func applicationWillResignActive() {
@@ -64,6 +67,7 @@ class NoteViewController: UIViewController {
   
   @objc func deleteNoteAction() {
     deleteExistingNote()
+    deleting = true
     navigationController?.popViewController(animated: true)
   }
   
