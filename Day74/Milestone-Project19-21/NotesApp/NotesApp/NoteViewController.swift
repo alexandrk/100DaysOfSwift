@@ -19,10 +19,10 @@ class NoteViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    // Controller Setup
     navigationController?.navigationBar.prefersLargeTitles = false
     existingNoteID = note?.id
     textView.text = note?.content
-    
     populateNotesArray()
     
     // Keyboard Adjustments
@@ -32,24 +32,34 @@ class NoteViewController: UIViewController {
     
     // Navigation Bar Items
     navigationItem.setRightBarButtonItems([
-      UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(saveNoteAction))
+      UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareNoteAction))
     ], animated: true)
     
     // Toolbar Items
     navigationController?.isToolbarHidden = false
     setToolbarItems([
-      UIBarButtonItem(title: "Delete", style: .done, target: self, action: #selector(deleteNoteAction)),
+      UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(deleteNoteAction)),
       UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
       UIBarButtonItem(barButtonSystemItem: .compose, target: self, action: #selector(createNewNoteAction))
       ], animated: true)
+  
+    // Saving edits on willResignActive event
+    notificationCenter.addObserver(self, selector: #selector(applicationWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
     
   }
 
-  @objc func saveNoteAction() {
+  override func viewWillDisappear(_ animated: Bool) {
     saveNote()
-    // Go back to list of notes
-    navigationController?.popViewController(animated: true)
+  }
   
+  @objc func applicationWillResignActive() {
+    saveNote()
+  }
+  
+  @objc func shareNoteAction() {
+    let vc = UIActivityViewController(activityItems: [textView.text ?? ""], applicationActivities: [])
+    vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+    present(vc, animated: true)
   }
   
   @objc func deleteNoteAction() {
@@ -106,6 +116,10 @@ class NoteViewController: UIViewController {
     
     // Prepend the new note to the beginning of the list
     notes.insert(note!, at: 0)
+    
+    // Assign note's ID to existing ID after a new note is created and saved,
+    // so the deletion of the note works properly on next save, and doesn't duplicate the note
+    existingNoteID = note?.id
     
     // Save to file
     Storage.store(notes, to: .documents, as: filename)
