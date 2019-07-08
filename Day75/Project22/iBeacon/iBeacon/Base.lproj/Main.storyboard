@@ -19,7 +19,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="UNKNOWN" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kmA-ZE-Vdp">
-                                <rect key="frame" x="111.5" y="424" width="191.5" height="48"/>
+                                <rect key="frame" x="107.5" y="364" width="199" height="48"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="40"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Closest Beacon Identifier" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rRj-fZ-frh">
+                                <rect key="frame" x="0.0" y="448" width="414" height="48"/>
                                 <fontDescription key="fontDescription" type="system" weight="thin" pointSize="40"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -27,12 +33,16 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="kmA-ZE-Vdp" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Qb5-Qw-ifz"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="rRj-fZ-frh" secondAttribute="trailing" id="0DX-K6-ikB"/>
+                            <constraint firstItem="rRj-fZ-frh" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="151-ID-CAg"/>
+                            <constraint firstItem="rRj-fZ-frh" firstAttribute="top" secondItem="kmA-ZE-Vdp" secondAttribute="bottom" constant="36" id="5IP-b5-zRT"/>
+                            <constraint firstItem="kmA-ZE-Vdp" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="-60" id="Qb5-Qw-ifz"/>
                             <constraint firstItem="kmA-ZE-Vdp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="kc2-WW-c35"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="closestBeaconLabel" destination="rRj-fZ-frh" id="GWx-Oe-Sw6"/>
                         <outlet property="distanceReading" destination="kmA-ZE-Vdp" id="kC4-Wn-ctZ"/>
                     </connections>
                 </viewController>

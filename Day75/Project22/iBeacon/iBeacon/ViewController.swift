@@ -12,7 +12,15 @@ import UIKit
 class ViewController: UIViewController, CLLocationManagerDelegate {
 
   @IBOutlet weak var distanceReading: UILabel!
+  @IBOutlet weak var closestBeaconLabel: UILabel!
   var locationManager: CLLocationManager?
+  var closestBeacon: CLBeacon!
+  var regionOfClosestBeacon: CLRegion! {
+    didSet {
+      self.closestBeaconLabel.text = self.regionOfClosestBeacon.identifier
+    }
+  }
+  var activeBeacons = [CLBeacon]()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -35,16 +43,33 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
   }
   
   func startScanning() {
-    let uuid = UUID(uuidString: "5A4BCFCE-174E-4BAC-A814-092E77F6B7E5")! // apple provided test uuid string
-    let beaconRegion = CLBeaconRegion(proximityUUID: uuid, major: 123, minor: 456, identifier: "MyBeacon")
+    let uuids = [
+      UUID(uuidString: "5A4BCFCE-174E-4BAC-A814-092E77F6B7E5")!: "Apple Test",      // Apple provided test uuid string
+      UUID(uuidString: "5AFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF")!: "RedBear Labs",    // RedBear Labs AFFFFFF
+      UUID(uuidString: "2F234454-CF6D-4A0F-ADF2-F4911BA9FFA6")!: "Radius Networks"  // Radius Networks 2F234454
+    ]
     
-    locationManager?.startMonitoring(for: beaconRegion)
-    locationManager?.startRangingBeacons(in: beaconRegion)
+    // Remove inactive regions
+    if let regions = locationManager?.monitoredRegions {
+      for region in regions {
+        locationManager?.stopMonitoring(for: region)
+      }
+    }
+    
+    for uuid in uuids {
+      let beaconRegion = CLBeaconRegion(proximityUUID: uuid.key, major: 0, minor: 0, identifier: uuid.value)
+      locationManager?.startMonitoring(for: beaconRegion)
+      locationManager?.startRangingBeacons(in: beaconRegion)
+    }
   }
   
-  func update(distance: CLProximity) {
+  func update(region: CLRegion, beacon: CLBeacon) {
+    
+    closestBeacon = beacon
+    regionOfClosestBeacon = region
+    
     UIView.animate(withDuration: 1) {
-      switch distance {
+      switch self.closestBeacon.proximity {
       case .far:
         self.view.backgroundColor = .blue
         self.distanceReading.text = "FAR"
@@ -80,10 +105,35 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
   
   // Called when beacon is detected
   func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
-    if let beacon = beacons.first {
-      update(distance: beacon.proximity)
-    } else {
-      update(distance: .unknown)
+    for beacon in beacons {
+      // Update activeBeacons array
+      if !activeBeacons.contains(where: {
+        $0.proximityUUID == beacon.proximityUUID &&
+        $0.major == beacon.major &&
+        $0.minor == beacon.minor
+      }) {
+        activeBeacons.append(beacon)
+      }
+      else {
+        let index = activeBeacons.firstIndex(where: {
+          $0.proximityUUID == beacon.proximityUUID &&
+          $0.major == beacon.major &&
+          beacon.minor == beacon.minor
+        })!
+        activeBeacons[index] = beacon
+
+        // Sort activeBeacons array by proximity from closest to furthers
+        // based on proximity.rawValue, smaller => closer to reciever
+        activeBeacons.sort { $0.proximity.rawValue < $1.proximity.rawValue }
+        // Remove Beacons with "".unknown proximity (rawValue = 0)
+        activeBeacons.removeAll(where: {$0.proximity == .unknown})
+      }
+      
+      // Update lavels to closest beacon
+      if !activeBeacons.isEmpty {
+        let regions = locationManager?.monitoredRegions.filter({ let region = $0 as? CLBeaconRegion; return region != nil}) as? Set<CLBeaconRegion>
+        update(region: regions?.first(where: {$0.proximityUUID == activeBeacons[0].proximityUUID}) ?? region, beacon: activeBeacons[0])
+      }
     }
   }
   
