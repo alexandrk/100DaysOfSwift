@@ -38,6 +38,8 @@
 	<string>We want to help you find the nearby store</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We want to help you find the nearby store</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We want to help you find the nearby store</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

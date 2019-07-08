@@ -64,12 +64,33 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
   }
   
+  // Called when beacon first encountered. Note the beacon must be off when the app launches to be detected as entered region.
+  func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+    showBeaconAlert(message: "Did enter region with identifier: \(region.identifier)")
+  }
+  
+  // Called when no beacon signal has been present for over 30 seconds
+  func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+    showBeaconAlert(message: "Did leave region with identifier: \(region.identifier)")
+  }
+  
+  func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
+    showBeaconAlert(message: "Location Error: \(error)")
+  }
+  
+  // Called when beacon is detected
   func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
     if let beacon = beacons.first {
       update(distance: beacon.proximity)
     } else {
       update(distance: .unknown)
     }
+  }
+  
+  func showBeaconAlert(message: String) {
+    let ac = UIAlertController(title: "Beacon Alert", message: message, preferredStyle: .alert)
+    ac.addAction(UIAlertAction(title: "OK", style: .cancel))
+    present(ac, animated: true)
   }
   
 }
