@@ -29,6 +29,9 @@ class GameScene: SKScene {
   var livesImages = [SKSpriteNode]()
   var lives = 3
   
+  var gameOverLabel: SKLabelNode!
+  var restartLabel: SKLabelNode!
+  
   var activeSliceBG: SKShapeNode!
   var activeSliceFG: SKShapeNode!
   
@@ -59,12 +62,16 @@ class GameScene: SKScene {
     background.zPosition = -1
     addChild(background)
     
-    physicsWorld.gravity = CGVector(dx: 0, dy: -6)
-    physicsWorld.speed = 0.85
-    
     createScore()
     createLives()
     createSlices()
+    
+    startGame()
+  }
+  
+  func startGame() {
+    physicsWorld.gravity = CGVector(dx: 0, dy: -6)
+    physicsWorld.speed = 0.85
     
     sequence = [.oneNoBomb, .oneNoBomb, .twoWithOneBomb, .twoWithOneBomb, .three, .one, .chain]
     
@@ -125,7 +132,6 @@ class GameScene: SKScene {
       if extraRarePopupCount < extraRareLimit {
           enemyType = Int.random(in: 0...5)
           extraRarePopupCount = extraRarePopupCount + 1
-          print("extraRarePopupCount: \(extraRarePopupCount)")
       } else {
         extraRarePopupCount = 0
       }
@@ -308,7 +314,7 @@ class GameScene: SKScene {
     
     isGameEnded = true
     physicsWorld.speed = 0
-    isUserInteractionEnabled = false
+    //isUserInteractionEnabled = false
     
     bombSoundEffect?.stop()
     bombSoundEffect = nil
@@ -317,6 +323,57 @@ class GameScene: SKScene {
       livesImages[0].texture = SKTexture(imageNamed: "sliceLifeGone")
       livesImages[1].texture = SKTexture(imageNamed: "sliceLifeGone")
       livesImages[2].texture = SKTexture(imageNamed: "sliceLifeGone")
+    }
+    
+    gameOver()
+  }
+  
+  func gameOver() {
+    gameOverLabel = SKLabelNode(fontNamed: "Chalkduster")
+    gameOverLabel.zPosition = 10
+    gameOverLabel.fontColor = .red
+    gameOverLabel.text = "GAME OVER"
+    gameOverLabel.fontSize = 50
+    gameOverLabel.setScale(0.1)
+    gameOverLabel.position = CGPoint(x: frame.width / 2, y: frame.height / 2)
+    
+    addChild(gameOverLabel)
+    
+    restartLabel = SKLabelNode(fontNamed: "Chalkduster")
+    restartLabel.zPosition = 10
+    restartLabel.fontColor = .green
+    restartLabel.text = "tap to play again"
+    restartLabel.fontSize = 30
+    restartLabel.setScale(0.1)
+    restartLabel.position = CGPoint(x: frame.width / 2, y: frame.height / 2 - 50)
+    
+    addChild(restartLabel)
+    
+    let seq = SKAction.sequence([SKAction.scale(to: 1.3, duration: 0.3), SKAction.scale(to: 1, duration: 0.15)])
+    gameOverLabel.run(seq)
+    
+    let seq2 = SKAction.sequence([SKAction.scale(to: 1.3, duration: 1), SKAction.scale(to: 1, duration: 1)])
+    restartLabel.run(SKAction.repeatForever(seq2))
+  }
+  
+  func restartGame() {
+    if isGameEnded {
+      isGameEnded = false
+      score = 0
+      lives = 3
+      
+      // Cancel: DispatchQueue.main.asyncAfter(deadline: .now() + 2) from previous run before creating a new one.
+      
+      activeEnemies.removeAll(keepingCapacity: true)
+      gameOverLabel.removeFromParent()
+      restartLabel.removeFromParent()
+      gameOverLabel = nil
+      restartLabel = nil
+      
+      livesImages = livesImages.map{$0.texture = SKTexture(imageNamed: "sliceLife"); return $0}
+      
+      startGame()
+      
     }
   }
   
@@ -340,9 +397,16 @@ class GameScene: SKScene {
   
   override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
     guard let touch = touches.first else { return }
-    activeSlicePoints.removeAll(keepingCapacity: true)
-    
     let location = touch.location(in: self)
+    let nodesAtPoint = nodes(at: location)
+    
+    if isGameEnded {
+      if (gameOverLabel != nil && gameOverLabel != nil) && nodesAtPoint.contains(gameOverLabel) || nodesAtPoint.contains(restartLabel) {
+        restartGame()
+      }
+    }
+    
+    activeSlicePoints.removeAll(keepingCapacity: true)
     activeSlicePoints.append(location)
     
     redrawActiveSlice()
