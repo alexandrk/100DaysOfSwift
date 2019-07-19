@@ -29,8 +29,8 @@ class ViewController: UIViewController {
     
     var array = [1, 2, 1, 3, 2, 4, 3, 5, 4, 6, 5, 6]
     print("Array before .remove(item:) extenison method: \(array)")
-    print("Results of using .remove(item:) extension method: \(array.remove(item: 4) ?? 0)")
-    print("Array after .remove(item:) extenison method: \(array)")
+    array.remove(item: 4) //print("Results of using .remove(item:) extension method: \(array.remove(item: 4) ?? 0)")
+    print(" Array after .remove(item:) extenison method: \(array)")
   }
   
 }
