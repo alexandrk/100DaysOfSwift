@@ -12,6 +12,7 @@ import UIKit
 class ViewController: UICollectionViewController {
 
   var images = [UIImage]()
+  var connectedDevices = [MCPeerID]()
   
   var peerID = MCPeerID(displayName: UIDevice.current.name)
   var mcSession: MCSession?
@@ -70,6 +71,12 @@ class ViewController: UICollectionViewController {
     present(ac, animated: true)
   }
   
+  func showDisconnectedAlert(peerID: MCPeerID) {
+    let ac = UIAlertController(title: "Attention", message: "\(peerID.displayName) has disconnected.", preferredStyle: .alert)
+    ac.addAction(UIAlertAction(title: "OK", style: .cancel))
+    present(ac, animated: true)
+  }
+  
 }
 
 extension ViewController: UINavigationControllerDelegate {
@@ -105,12 +112,17 @@ extension ViewController: MCSessionDelegate {
   func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
     switch state {
     case .connected:
+      connectedDevices.append(peerID)
       print("Connected: \(peerID.displayName)")
       
     case .connecting:
       print("Connecting: \(peerID.displayName)")
       
     case .notConnected:
+      if let disconnectedPeerIndex = connectedDevices.firstIndex(of: peerID) {
+        showDisconnectedAlert(peerID: peerID)
+        connectedDevices.remove(at: disconnectedPeerIndex)
+      }
       print("Not Connected: \(peerID.displayName)")
       
     @unknown default:
@@ -136,7 +148,7 @@ extension ViewController: MCSessionDelegate {
   }
   
   func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
-    
+    print("resourceName: \(resourceName)")
   }
   
   
