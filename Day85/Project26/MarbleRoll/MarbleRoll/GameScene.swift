@@ -20,6 +20,7 @@ enum CollisionTypes: UInt32 {
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
   var player: SKSpriteNode!
+  let defaultPlayerPosition = CGPoint(x: 96, y: 672)
   var lastTouchPosition: CGPoint?
   
   var motionManager: CMMotionManager?
@@ -54,7 +55,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     addChild(scoreLabel)
     
     loadLevel()
-    createPlayer()
+    createPlayer(at: defaultPlayerPosition)
     
     physicsWorld.gravity = .zero
     physicsWorld.contactDelegate = self
@@ -72,68 +73,70 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     for (row, line) in lines.reversed().enumerated() {
       for (column, letter) in line.enumerated() {
         let position = CGPoint(x: (64 * column) + 32, y: (64 * row) + 32)
-        
-        if letter == "x" {
-          // load wall
-          let node = SKSpriteNode(imageNamed: "block")
-          node.position = position
-          node.physicsBody = SKPhysicsBody(rectangleOf: node.size)
-          node.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
-          node.physicsBody?.isDynamic = false
-          
-          addChild(node)
-        } else if letter == "v" {
-          // load vortex
-          let node = SKSpriteNode(imageNamed: "vortex")
-          node.name = "vortex"
-          node.position = position
-          node.run(SKAction.repeatForever(SKAction.rotate(byAngle: .pi, duration: 1)))
-          node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
-          node.physicsBody?.isDynamic = false
-          node.physicsBody?.categoryBitMask = CollisionTypes.vortex.rawValue
-          
-          // Send a message on collision with player bitmask
-          node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
-          // Don't bounce of anything
-          node.physicsBody?.collisionBitMask = 0
-          
-          addChild(node)
-        } else if letter == "s" {
-          // load star
-          let node = SKSpriteNode(imageNamed: "star")
-          node.name = "star"
-          node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
-          node.physicsBody?.isDynamic = false
-          node.physicsBody?.categoryBitMask = CollisionTypes.star.rawValue
-          node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
-          node.physicsBody?.collisionBitMask = 0
-          node.position = position
-          
-          addChild(node)
-        } else if letter == "f" {
-          // load finish point
-          let node = SKSpriteNode(imageNamed: "finish")
-          node.name = "finish"
-          node.physicsBody = SKPhysicsBody(rectangleOf: node.size)
-          node.physicsBody?.isDynamic = false
-          node.physicsBody?.categoryBitMask = CollisionTypes.finish.rawValue
-          node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
-          node.physicsBody?.collisionBitMask = 0
-          node.position = position
-          
-          addChild(node)
-        } else if letter == " " {
-          // this is an empty space - do nothing.
-        } else {
-          fatalError("Unknown level letter: '\(letter)'")
+        switch letter {
+          case "x": createWall(at: position)
+          case "v": createVortex(at: position)
+          case "s": createStar(at: position)
+          case "f": createFinish(at: position)
+          case " ": break // this is an empty space - do nothing.
+          default :  fatalError("Unknown level letter: '\(letter)'")
         }
       }
     }
   }
   
-  func createPlayer() {
+  func createWall(at position: CGPoint) {
+    let node = SKSpriteNode(imageNamed: "block")
+    node.position = position
+    node.physicsBody = SKPhysicsBody(rectangleOf: node.size)
+    node.physicsBody?.categoryBitMask = CollisionTypes.wall.rawValue
+    node.physicsBody?.isDynamic = false
+    addChild(node)
+  }
+  
+  func createVortex(at position: CGPoint) {
+    let node = SKSpriteNode(imageNamed: "vortex")
+    node.name = "vortex"
+    node.position = position
+    node.run(SKAction.repeatForever(SKAction.rotate(byAngle: .pi, duration: 1)))
+    node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
+    node.physicsBody?.isDynamic = false
+    node.physicsBody?.categoryBitMask = CollisionTypes.vortex.rawValue
+    
+    // Send a message on collision with player bitmask
+    node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
+    // Don't bounce of anything
+    node.physicsBody?.collisionBitMask = 0
+    addChild(node)
+  }
+  
+  func createStar(at position: CGPoint) {
+    let node = SKSpriteNode(imageNamed: "star")
+    node.name = "star"
+    node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
+    node.physicsBody?.isDynamic = false
+    node.physicsBody?.categoryBitMask = CollisionTypes.star.rawValue
+    node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
+    node.physicsBody?.collisionBitMask = 0
+    node.position = position
+    addChild(node)
+  }
+  
+  func createFinish(at position: CGPoint){
+    let node = SKSpriteNode(imageNamed: "finish")
+    node.name = "finish"
+    node.physicsBody = SKPhysicsBody(rectangleOf: node.size)
+    node.physicsBody?.isDynamic = false
+    node.physicsBody?.categoryBitMask = CollisionTypes.finish.rawValue
+    node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
+    node.physicsBody?.collisionBitMask = 0
+    node.position = position
+    addChild(node)
+  }
+  
+  func createPlayer(at position: CGPoint) {
     player = SKSpriteNode(imageNamed: "player")
-    player.position = CGPoint(x: 96, y: 672)
+    player.position = position
     player.zPosition = 1
     
     player.physicsBody = SKPhysicsBody(circleOfRadius: player.size.width / 2)
@@ -197,7 +200,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
       let remove = SKAction.removeFromParent()
       let sequence = SKAction.sequence([move, scale, remove])
       player.run(sequence) { [weak self] in
-        self?.createPlayer()
+        self?.createPlayer(at: self!.defaultPlayerPosition)
         self?.isGameOver = false
       }
     } else if node.name == "star" {
