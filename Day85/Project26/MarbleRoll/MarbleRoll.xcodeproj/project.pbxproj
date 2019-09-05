@@ -15,6 +15,7 @@
 		117D1EAD2316F7B200A4E22B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 117D1EAC2316F7B200A4E22B /* Assets.xcassets */; };
 		117D1EB02316F7B200A4E22B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 117D1EAE2316F7B200A4E22B /* LaunchScreen.storyboard */; };
 		117D1EB82316F87A00A4E22B /* level1.txt in Resources */ = {isa = PBXBuildFile; fileRef = 117D1EB72316F87A00A4E22B /* level1.txt */; };
+		117D1EBA2320442D00A4E22B /* level2.txt in Resources */ = {isa = PBXBuildFile; fileRef = 117D1EB92320442D00A4E22B /* level2.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		117D1EAF2316F7B200A4E22B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		117D1EB12316F7B200A4E22B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		117D1EB72316F87A00A4E22B /* level1.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = level1.txt; sourceTree = "<group>"; };
+		117D1EB92320442D00A4E22B /* level2.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = level2.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				117D1EAC2316F7B200A4E22B /* Assets.xcassets */,
 				117D1EAE2316F7B200A4E22B /* LaunchScreen.storyboard */,
 				117D1EB72316F87A00A4E22B /* level1.txt */,
+				117D1EB92320442D00A4E22B /* level2.txt */,
 				117D1EB12316F7B200A4E22B /* Info.plist */,
 			);
 			path = MarbleRoll;
@@ -133,6 +136,7 @@
 			files = (
 				117D1EB82316F87A00A4E22B /* level1.txt in Resources */,
 				117D1EAB2316F7B100A4E22B /* Main.storyboard in Resources */,
+				117D1EBA2320442D00A4E22B /* level2.txt in Resources */,
 				117D1EA22316F7B100A4E22B /* GameScene.sks in Resources */,
 				117D1EAD2316F7B200A4E22B /* Assets.xcassets in Resources */,
 				117D1EB02316F7B200A4E22B /* LaunchScreen.storyboard in Resources */,

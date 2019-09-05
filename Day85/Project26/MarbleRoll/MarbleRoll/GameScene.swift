@@ -22,6 +22,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   var player: SKSpriteNode!
   let defaultPlayerPosition = CGPoint(x: 96, y: 672)
   var lastTouchPosition: CGPoint?
+  var currentLevel = 1
+  var loadingNextLevel = false
   
   var motionManager: CMMotionManager?
   var isGameOver = false
@@ -33,28 +35,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
   }
   
-  override func didMove(to view: SKView) {
-    
-    scene?.scaleMode = .aspectFit
-    
-    print("Screen bounds: \(UIScreen.main.bounds)")
-    print("Device orientation (flat): \(UIDevice.current.orientation.isFlat)")
-    print("Device orientation: \((UIDevice.current.orientation.isPortrait) ? "portrait" : "landscape" )")
-    print("Scene dimensions: \(view.scene!.size)")
-    
+  fileprivate func addBackground() {
     let background = SKSpriteNode(imageNamed: "background")
     background.position = CGPoint(x: 512, y: 384)
     background.blendMode = .replace
     background.zPosition = -1
     addChild(background)
-    
+  }
+  
+  fileprivate func addScoreLabel() {
     scoreLabel = SKLabelNode(fontNamed: "Chalkduster")
+    scoreLabel.text = "Score: \(score)"
     scoreLabel.horizontalAlignmentMode = .left
     scoreLabel.position = CGPoint(x: 16, y: 16)
     scoreLabel.zPosition = 2
     addChild(scoreLabel)
+  }
+  
+  override func didMove(to view: SKView) {
+    
+    scene?.scaleMode = .aspectFit
     
     loadLevel()
+    addBackground()
+    addScoreLabel()
     createPlayer(at: defaultPlayerPosition)
     
     physicsWorld.gravity = .zero
@@ -65,14 +69,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   }
   
   func loadLevel() {
-    guard let levelURL = Bundle.main.url(forResource: "level1", withExtension: "txt") else { fatalError("Could not find level1.txt in the app bundle.") }
+    
+    // Clear the scene
+    removeChildren(in: children)
+    
+    guard let levelURL = Bundle.main.url(forResource: "level\(currentLevel)", withExtension: "txt") else { fatalError("Could not find level\(currentLevel).txt in the app bundle.") }
     guard let levelString = try? String(contentsOf: levelURL) else { fatalError("Could not load level1.txt from the app bundle") }
     
     let lines = levelString.components(separatedBy: "\n")
     
     for (row, line) in lines.reversed().enumerated() {
+      
       for (column, letter) in line.enumerated() {
-        let position = CGPoint(x: (64 * column) + 32, y: (64 * row) + 32)
+        let position = CGPoint(x: (64 * column) + 32, y: (64 * (row)) + 32)
         switch letter {
           case "x": createWall(at: position)
           case "v": createVortex(at: position)
@@ -152,6 +161,42 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     guard let touch = touches.first else { return }
     let location = touch.location(in: self)
     lastTouchPosition = location
+    
+    // Check if next level node was pressed
+    let nodesUnderTouch = nodes(at: location)
+    for case let node as SKLabelNode in nodesUnderTouch where ["next level", "game over"].contains(node.name?.lowercased()) {
+      isGameOver = true
+      switch node.name?.lowercased() {
+      case "next level": loadNextLevel()
+      case "game over": restartGame()
+      default: continue
+      }
+      break
+    }
+    
+  }
+  
+  func restartGame() {
+    currentLevel = 1
+    loadLevel()
+    addBackground()
+    addScoreLabel()
+    createPlayer(at: defaultPlayerPosition)
+    physicsWorld.gravity = .zero
+    player.physicsBody?.isDynamic = true
+    isGameOver = false
+  }
+  
+  func loadNextLevel() {
+    loadingNextLevel = true
+    loadLevel()
+    addBackground()
+    addScoreLabel()
+    createPlayer(at: defaultPlayerPosition)
+    physicsWorld.gravity = .zero
+    player.physicsBody?.isDynamic = true
+    isGameOver = false
+    loadingNextLevel = false
   }
   
   override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -165,6 +210,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   }
   
   override func update(_ currentTime: TimeInterval) {
+    
     guard isGameOver == false else { return }
     
     #if targetEnvironment(simulator)
@@ -207,7 +253,45 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
       node.removeFromParent()
       score += 1
     } else if node.name == "finish" {
-      // next level
+      
+      // 0. Next Level
+      currentLevel += 1
+      
+      // 1. Turn of players physics
+      player.physicsBody?.isDynamic = false
+      
+      // 2. Center player on the finish node and create animation
+      let moveAction = SKAction.move(to: node.position, duration: 0.5)
+      let repeatScaleAction = SKAction.repeatForever(SKAction.sequence([
+        SKAction.scale(to: 1.8, duration: 0.5),
+        SKAction.scale(to: 1, duration: 0.5)])
+      )
+      let repeatRotateAction = SKAction.repeatForever(SKAction.rotate(byAngle: 6.28319, duration: 1))
+      let group = SKAction.group([repeatScaleAction, repeatRotateAction])
+      let sequence = SKAction.sequence([moveAction, group])
+      player.run(sequence)
+      
+      // 3. Remove the finish node
+      node.removeFromParent()
+      
+      // 4. Show next level node if next level is available
+      let endLevelNode = SKLabelNode(fontNamed: "Chalkduster")
+      endLevelNode.horizontalAlignmentMode = .center
+      endLevelNode.fontSize = 50
+      endLevelNode.position = CGPoint(x: scene!.size.width / 2, y: scene!.size.height / 2)
+      endLevelNode.zPosition = 2
+      
+      if let _ = Bundle.main.url(forResource: "level\(currentLevel + 1)", withExtension: "txt") {
+        endLevelNode.text = "NEXT LEVEL"
+        endLevelNode.name = "Next Level"
+        endLevelNode.fontColor = .green
+      } else {
+        endLevelNode.text = "GAME OVER"
+        endLevelNode.name = "Game Over"
+        endLevelNode.fontColor = .red
+      }
+      addChild(endLevelNode)
+      
     }
   }
 }
