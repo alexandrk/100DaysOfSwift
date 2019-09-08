@@ -15,6 +15,7 @@ enum CollisionTypes: UInt32 {
   case wall = 2
   case star = 4
   case vortex = 8
+  case portal = 32
   case finish = 16
 }
 
@@ -27,6 +28,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
   
   var motionManager: CMMotionManager?
   var isGameOver = false
+  var isTeleporting = false
+  
+  var portals = [SKSpriteNode]()
+  var currentPortal:  SKSpriteNode?
   
   var scoreLabel: SKLabelNode!
   var score = 0 {
@@ -86,6 +91,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
           case "x": createWall(at: position)
           case "v": createVortex(at: position)
           case "s": createStar(at: position)
+          case "p": createPortal(at: position)
           case "f": createFinish(at: position)
           case " ": break // this is an empty space - do nothing.
           default :  fatalError("Unknown level letter: '\(letter)'")
@@ -128,6 +134,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
     node.physicsBody?.collisionBitMask = 0
     node.position = position
+    addChild(node)
+  }
+  
+  func createPortal(at position: CGPoint) {
+    let node = SKSpriteNode(imageNamed: "portal")
+    node.name = "portal"
+    node.position = position
+    node.size = CGSize(width: 64, height: 64)
+    node.run(SKAction.repeatForever(SKAction.rotate(byAngle: -.pi, duration: 5)))
+    node.physicsBody = SKPhysicsBody(circleOfRadius: node.size.width / 2)
+    node.physicsBody?.isDynamic = false
+    node.physicsBody?.categoryBitMask = CollisionTypes.portal.rawValue
+    
+    // Send a message on collision with player bitmask
+    node.physicsBody?.contactTestBitMask = CollisionTypes.player.rawValue
+    // Don't bounce of anything
+    node.physicsBody?.collisionBitMask = 0
+    
+    // Add portal to array of portals
+    portals.append(node)
+    
     addChild(node)
   }
   
@@ -213,6 +240,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     guard isGameOver == false else { return }
     
+    if isTeleporting {
+      if (abs(player.position.x - currentPortal!.position.x) > currentPortal!.size.width ||
+        abs(player.position.y - currentPortal!.position.y) > currentPortal!.size.height) {
+        isTeleporting = false
+      }
+    }
+    
     #if targetEnvironment(simulator)
     if let lastTouchPosition = lastTouchPosition {
       let diff = CGPoint(x: lastTouchPosition.x - player.position.x, y: lastTouchPosition.y - player.position.y)
@@ -248,6 +282,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
       player.run(sequence) { [weak self] in
         self?.createPlayer(at: self!.defaultPlayerPosition)
         self?.isGameOver = false
+      }
+    } else if node.name == "portal" {
+      guard !isTeleporting else { return }
+      
+      isTeleporting = true
+      player.physicsBody?.isDynamic = false
+      isGameOver = true
+      let move = SKAction.move(to: node.position, duration: 0.25)
+      let scale = SKAction.scale(to: 0.0001, duration: 0.25)
+      let sequence = SKAction.sequence([move, scale])
+      player.run(sequence) { [weak self] in
+        guard let self = self else { return }
+        
+        if let portalIndex = self.portals.firstIndex(of: node as! SKSpriteNode) {
+          let nextPortalIndex = (portalIndex < self.portals.count - 1) ? self.portals.index(after: portalIndex) : self.portals.index(before: portalIndex)
+          self.currentPortal = self.portals[nextPortalIndex]
+          self.player.position = self.currentPortal!.position
+          self.player.run(SKAction.scale(to: 1, duration: 0.25)) { [weak self] in
+            self?.isGameOver = false
+            self?.player.physicsBody?.isDynamic = true
+          }
+        }
       }
     } else if node.name == "star" {
       node.removeFromParent()
