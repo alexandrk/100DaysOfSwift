@@ -22,7 +22,9 @@ class ViewController: UIViewController {
   @IBAction func redrawTapped(_ sender: Any) {
     currentDrawType += 1
     
-    if currentDrawType > 5 {
+    currentDrawType = 6
+    
+    if currentDrawType > 6 {
       currentDrawType = 0
     }
     
@@ -39,6 +41,8 @@ class ViewController: UIViewController {
       drawLines()
     case 5:
       drawImagesAndText()
+    case 6:
+      drawTwin()
     default:
       break
     }
@@ -187,6 +191,46 @@ class ViewController: UIViewController {
       
       let mouse = UIImage(named: "mouse")
       mouse?.draw(at: CGPoint(x: 300, y: 150))
+    }
+    
+    imageView.image = img
+  }
+  
+  func drawTwin() {
+    let renderer = UIGraphicsImageRenderer(size: CGSize(width: 512, height: 512))
+    
+    let img = renderer.image { ctx in
+      
+      ctx.cgContext.setStrokeColor(UIColor.black.cgColor)
+      ctx.cgContext.setLineWidth(10)
+      
+      // TWIN
+      
+      // T
+      ctx.cgContext.move(to: CGPoint(x: 50, y: 30))
+      ctx.cgContext.addLine(to: CGPoint(x: 150, y: 30))
+      ctx.cgContext.move(to: CGPoint(x: 100, y: 30))
+      ctx.cgContext.addLine(to: CGPoint(x: 100, y: 180))
+      
+      // W
+      ctx.cgContext.move(to: CGPoint(x: 170, y: 25))
+      ctx.cgContext.addLine(to: CGPoint(x: 200, y: 175))
+      ctx.cgContext.addLine(to: CGPoint(x: 230, y: 130))
+      ctx.cgContext.addLine(to: CGPoint(x: 260, y: 175))
+      ctx.cgContext.addLine(to: CGPoint(x: 290, y: 25))
+      
+      // I
+      ctx.cgContext.move(to: CGPoint(x: 310, y: 30))
+      ctx.cgContext.addLine(to: CGPoint(x: 310, y: 180))
+      
+      // N
+      ctx.cgContext.move(to: CGPoint(x: 330, y: 180))
+      ctx.cgContext.addLine(to: CGPoint(x: 330, y: 40))
+      ctx.cgContext.addLine(to: CGPoint(x: 430, y: 170))
+      ctx.cgContext.addLine(to: CGPoint(x: 430, y: 30))
+      
+      
+      ctx.cgContext.strokePath()
     }
     
     imageView.image = img
