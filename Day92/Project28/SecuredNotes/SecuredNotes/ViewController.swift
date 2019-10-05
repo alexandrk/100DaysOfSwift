@@ -23,6 +23,12 @@ class ViewController: UIViewController {
     notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     notificationCenter.addObserver(self, selector: #selector(saveSecretMessage), name: UIApplication.willResignActiveNotification, object: nil)
     
+    toggleDoneButtonVisibility()
+  }
+
+  func toggleDoneButtonVisibility() {
+    let doneButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(lockApp))
+    navigationItem.rightBarButtonItem = (!secret.isHidden) ? doneButton : nil
   }
   
   @objc func lockApp() {
@@ -76,6 +82,7 @@ class ViewController: UIViewController {
   
   func unlockSecretMessage() {
     secret.isHidden = false
+    toggleDoneButtonVisibility()
     title = "Secret stuff!"
     secret.text = KeychainWrapper.standard.string(forKey: "SecretMessage") ?? ""
   }
@@ -86,6 +93,7 @@ class ViewController: UIViewController {
     KeychainWrapper.standard.set(secret.text, forKey: "SecretMessage")
     secret.resignFirstResponder()
     secret.isHidden = true
+    toggleDoneButtonVisibility()
     title = "Nothing to see here"
   }
 }
