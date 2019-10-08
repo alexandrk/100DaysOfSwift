@@ -23,6 +23,8 @@ class ViewController: UIViewController {
     notificationCenter.addObserver(self, selector: #selector(adjustForKeyboard), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     notificationCenter.addObserver(self, selector: #selector(saveSecretMessage), name: UIApplication.willResignActiveNotification, object: nil)
     
+    Authenticate.inititialize(host: self)
+    
     toggleDoneButtonVisibility()
   }
 
@@ -41,26 +43,12 @@ class ViewController: UIViewController {
     
     // Used for devices with fingerprint reader ONLY
     if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
-      let reason = "Identify yourself!"
-      
-      context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { [weak self] success, authenticationError in
-        DispatchQueue.main.async {
-          if success {
-            self?.unlockSecretMessage()
-          } else {
-            // user failed to authenticate
-            let ac = UIAlertController(title: "Authentication Failed", message: "You could not be verified, please try again.", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default))
-            self?.present(ac, animated: true)
-          }
-        }
-      }
+      Authenticate.withBiometrics(context: context)
     } else {
-      // no biometry
-      let ac = UIAlertController(title: "Biometry unavailable", message: "Your device is not configured for biometric authentication.", preferredStyle: .alert)
-      ac.addAction(UIAlertAction(title: "OK", style: .default))
+      // Biometrics not available
+      let ac = UIAlertController(title: "Biometrics Unavailable", message: "Your device is not configured for biometric authentication.", preferredStyle: .alert)
+      ac.addAction(UIAlertAction(title: "OK", style: .default){ _ in Authenticate.withPassword() })
       present(ac, animated: true)
-      
     }
   }
  

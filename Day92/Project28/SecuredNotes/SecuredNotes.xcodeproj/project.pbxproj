@@ -15,6 +15,7 @@
 		111CF614233E96C600B23785 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 111CF612233E96C600B23785 /* LaunchScreen.storyboard */; };
 		111CF61D233FE64F00B23785 /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111CF61B233FE64F00B23785 /* KeychainWrapper.swift */; };
 		111CF61E233FE64F00B23785 /* KeychainItemAccessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111CF61C233FE64F00B23785 /* KeychainItemAccessibility.swift */; };
+		11FCA58723491B5600D64BED /* Authenticate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FCA58623491B5600D64BED /* Authenticate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 		111CF615233E96C600B23785 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		111CF61B233FE64F00B23785 /* KeychainWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainWrapper.swift; sourceTree = "<group>"; };
 		111CF61C233FE64F00B23785 /* KeychainItemAccessibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainItemAccessibility.swift; sourceTree = "<group>"; };
+		11FCA58623491B5600D64BED /* Authenticate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authenticate.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 				111CF615233E96C600B23785 /* Info.plist */,
 				111CF61C233FE64F00B23785 /* KeychainItemAccessibility.swift */,
 				111CF61B233FE64F00B23785 /* KeychainWrapper.swift */,
+				11FCA58623491B5600D64BED /* Authenticate.swift */,
 			);
 			path = SecuredNotes;
 			sourceTree = "<group>";
@@ -146,6 +149,7 @@
 			files = (
 				111CF60C233E96C600B23785 /* ViewController.swift in Sources */,
 				111CF61D233FE64F00B23785 /* KeychainWrapper.swift in Sources */,
+				11FCA58723491B5600D64BED /* Authenticate.swift in Sources */,
 				111CF608233E96C600B23785 /* AppDelegate.swift in Sources */,
 				111CF61E233FE64F00B23785 /* KeychainItemAccessibility.swift in Sources */,
 				111CF60A233E96C600B23785 /* SceneDelegate.swift in Sources */,
