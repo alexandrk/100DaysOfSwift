@@ -17,15 +17,35 @@ class BuildingNode: SKSpriteNode {
     
     currentImage = drawBuilding(size: size)
     texture = SKTexture(image: currentImage)
-    
-    configurePhysics()
+    configurePhysics(update: false)
   }
   
-  func configurePhysics() {
-    physicsBody = SKPhysicsBody(texture: texture!, size: size)
-    physicsBody?.isDynamic = false
-    physicsBody?.categoryBitMask = CollisionTypes.building.rawValue
-    physicsBody?.contactTestBitMask = CollisionTypes.banana.rawValue
+  func configurePhysics(update: Bool) {
+    if update { physicsBody = nil }
+
+    var count = 0
+    while physicsBody == nil && count < 300 {
+      count += 1
+      physicsBody = SKPhysicsBody(texture: texture!, size: size)
+      
+      if count % 50 == 0 {
+        print("Physics Body not created after: \(count) attempts.")
+      }
+      
+      if physicsBody == nil && !update {
+        currentImage = drawBuilding(size: size)
+        texture = SKTexture(image: currentImage)
+      } else if physicsBody == nil && update {
+        print("Unable to update physics body.")
+      }
+      else {
+        print("Physics Body created on: \(count) attempt.")
+      }
+    }
+    
+    physicsBody!.isDynamic = false
+    physicsBody!.categoryBitMask = CollisionTypes.building.rawValue
+    physicsBody!.contactTestBitMask = CollisionTypes.banana.rawValue
   }
   
   func drawBuilding(size: CGSize) -> UIImage {
@@ -62,4 +82,22 @@ class BuildingNode: SKSpriteNode {
     }
     return img
   }
+  
+  func hit(at point: CGPoint) {
+    let convertedPoint = CGPoint(x: point.x + size.width / 2, y: abs(point.y - (size.height / 2)))
+    
+    let renderer = UIGraphicsImageRenderer(size: size)
+    let img = renderer.image { ctx in
+      currentImage.draw(at: .zero)
+      
+      ctx.cgContext.addEllipse(in: CGRect(x: convertedPoint.x - 32, y: convertedPoint.y - 32, width: 64, height: 64))
+      ctx.cgContext.setBlendMode(.clear)
+      ctx.cgContext.drawPath(using: .fill)
+    }
+    
+    texture = SKTexture(image: img)
+    currentImage = img
+    configurePhysics(update: true)
+  }
+  
 }
