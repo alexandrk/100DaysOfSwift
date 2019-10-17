@@ -156,6 +156,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
   }
   
+  fileprivate func updateGameScore() {
+    if self.currentPlayer == 1 {
+      let player1Score = Int(String(self.viewController?.player1Score.text?.split(separator: ":")[1] ?? "").trimmingCharacters(in: [" "]))
+      self.viewController?.player1Score.text = "Player 1: \((player1Score ?? 0) + 1)"
+    } else {
+      let player2Score = Int(String(self.viewController?.player2Score.text?.split(separator: ":")[1] ?? "").trimmingCharacters(in: [" "]))
+      self.viewController?.player2Score.text = "Player 2: \((player2Score ?? 0) + 1)"
+    }
+  }
+  
   func destroy(player: SKSpriteNode) {
     if let explosion = SKEmitterNode(fileNamed: "hitPlayer") {
       explosion.position = player.position
@@ -168,6 +178,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let newGame = GameScene(size: self.size)
         newGame.viewController = self.viewController
         self.viewController?.currentGame = newGame
+        
+        self.updateGameScore()
         
         self.changePlayer()
         newGame.currentPlayer = self.currentPlayer
