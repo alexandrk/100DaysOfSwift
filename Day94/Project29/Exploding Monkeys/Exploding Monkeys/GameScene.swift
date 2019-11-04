@@ -30,6 +30,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     createPlayers()
     
     physicsWorld.contactDelegate = self
+
+    createWind()
   }
   
   func createBuildings() {
@@ -74,6 +76,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let player2Building = buildings[buildings.count - 2]
     player2.position = CGPoint(x: player2Building.position.x, y: player2Building.size.height + player2.size.height / 2)
     addChild(player2)
+  }
+  
+  func createWind() {
+    let windSpeed = Int.random(in: -5...5)
+    var windLabel = ""
+    
+    physicsWorld.gravity = CGVector(dx: Double(windSpeed) * 2, dy: -9.8)
+    
+    switch windSpeed {
+      case _ where windSpeed < 0:
+        windLabel = "Wind: \( String(repeating: "<", count: abs(windSpeed)) )"
+      case _ where windSpeed > 0:
+        windLabel = "Wind: \( String(repeating: ">", count: windSpeed) )"
+      default:
+        windLabel = "No wind."
+    }
+    
+    viewController?.wind.text = windLabel    
   }
   
   func launch(angle: Int, velocity: Int) {

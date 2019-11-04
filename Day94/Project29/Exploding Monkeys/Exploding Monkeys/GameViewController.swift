@@ -18,7 +18,7 @@ class GameViewController: UIViewController {
   @IBOutlet weak var velocitySlider: UISlider!
   @IBOutlet weak var velocityLabel: UILabel!
   @IBOutlet weak var launchButton: UIButton!
-  @IBOutlet weak var playerNumber: UILabel!
+  @IBOutlet weak var wind: UILabel!
   @IBOutlet weak var player1Score: UILabel!
   @IBOutlet weak var player2Score: UILabel!
   
@@ -31,11 +31,11 @@ class GameViewController: UIViewController {
                 // Set the scale mode to scale to fit the window
                 scene.scaleMode = .aspectFill
                 
+                currentGame = scene as? GameScene
+                currentGame?.viewController = self
+                
                 // Present the scene
                 view.presentScene(scene)
-              
-              currentGame = scene as? GameScene
-              currentGame?.viewController = self
             }
             
             view.ignoresSiblingOrder = true
@@ -46,6 +46,7 @@ class GameViewController: UIViewController {
     
       angleChanged(self)
       velocityChanged(self)
+      activatePlayer(number: 1)
     }
 
     override var shouldAutorotate: Bool {
@@ -83,9 +84,11 @@ class GameViewController: UIViewController {
   
   func activatePlayer(number: Int) {
     if number == 1 {
-      playerNumber.text = "<<< PLAYER ONE"
+      player1Score.font = UIFont.boldSystemFont(ofSize: player1Score.font.pointSize + 3)
+      player2Score.font = UIFont.systemFont(ofSize: player2Score.font.pointSize - 3)
     } else {
-      playerNumber.text = "PLAYER TWO >>>"
+      player1Score.font = UIFont.systemFont(ofSize: player1Score.font.pointSize - 3)
+      player2Score.font = UIFont.boldSystemFont(ofSize: player2Score.font.pointSize + 3)
     }
     angleSlider.isHidden = false
     angleLabel.isHidden = false
